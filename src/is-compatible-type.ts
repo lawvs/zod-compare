@@ -25,7 +25,7 @@ import {
 export const isCompatibleType = (
   higherType: ZodType,
   lowerType: ZodType,
-  options?: Partial<IsCompatibleTypeOptions>
+  options?: Partial<IsCompatibleTypeOptions>,
 ): boolean => {
   const opts: IsCompatibleTypeOptions = {
     ...DEFAULT_COMPARE_TYPE_OPTIONS,
@@ -41,7 +41,7 @@ export const isCompatibleType = (
 
   if (!("typeName" in higherType._def) || !("typeName" in lowerType._def)) {
     throw new Error(
-      "Failed to compare type! " + higherType._def + " " + lowerType._def
+      "Failed to compare type! " + higherType._def + " " + lowerType._def,
     );
   }
 
@@ -56,7 +56,7 @@ export const isCompatibleType = (
   if (higherType instanceof z.ZodUnion && lowerType instanceof z.ZodUnion) {
     for (let i = 0; i < higherType.options.length; i++) {
       const match = lowerType.options.some((option: ZodType) =>
-        isCompatibleType(option, lowerType.options[i], opts)
+        isCompatibleType(option, lowerType.options[i], opts),
       );
       if (!match) return false;
     }
@@ -64,12 +64,12 @@ export const isCompatibleType = (
   }
   if (higherType instanceof z.ZodUnion) {
     return higherType.options.every((option: ZodType) =>
-      isCompatibleType(option, lowerType, opts)
+      isCompatibleType(option, lowerType, opts),
     );
   }
   if (lowerType instanceof z.ZodUnion) {
     return lowerType.options.some((option: ZodType) =>
-      isCompatibleType(higherType, option, opts)
+      isCompatibleType(higherType, option, opts),
     );
   }
 
@@ -118,6 +118,6 @@ export const isCompatibleType = (
     "Failed to compare types!" +
       higherType._def.typeName +
       " " +
-      lowerType._def.typeName
+      lowerType._def.typeName,
   );
 };

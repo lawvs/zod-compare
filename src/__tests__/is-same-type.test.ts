@@ -15,14 +15,14 @@ describe("isSameType", () => {
     expect(isSameType(z.string().optional(), z.string())).toBe(false);
     expect(isSameType(z.string().optional(), z.string().optional())).toBe(true);
     expect(isSameType(z.string().nullable(), z.string().optional())).toBe(
-      false
+      false,
     );
   });
 
   test("should return false when compare branded type", () => {
     expect(isSameType(z.string().brand("test"), z.string())).toBe(false);
     expect(isSameType(z.string().brand("test"), z.string().brand("test"))).toBe(
-      false
+      false,
     );
     // expect(() =>
     //   isSameType(z.string().brand("test"), z.string().brand("test"))
@@ -37,8 +37,8 @@ describe("isSameType", () => {
         }),
         z.object({
           name: z.string(),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
     expect(
       isSameType(
@@ -47,8 +47,8 @@ describe("isSameType", () => {
         }),
         z.object({
           name: z.number(),
-        })
-      )
+        }),
+      ),
     ).toBe(false);
     expect(
       isSameType(
@@ -59,8 +59,8 @@ describe("isSameType", () => {
           .partial(),
         z.object({
           name: z.string(),
-        })
-      )
+        }),
+      ),
     ).toBe(false);
     expect(
       isSameType(
@@ -73,8 +73,8 @@ describe("isSameType", () => {
           .object({
             name: z.string(),
           })
-          .partial()
-      )
+          .partial(),
+      ),
     ).toBe(true);
     expect(
       isSameType(
@@ -83,16 +83,16 @@ describe("isSameType", () => {
         }),
         z.object({
           name: z.string().optional(),
-        })
-      )
+        }),
+      ),
     ).toBe(false);
     expect(
       isSameType(
         z.object({}),
         z.object({
           name: z.string(),
-        })
-      )
+        }),
+      ),
     ).toBe(false);
   });
 
@@ -100,58 +100,58 @@ describe("isSameType", () => {
     expect(
       isSameType(
         z.tuple([z.string(), z.string()]),
-        z.tuple([z.string(), z.string()])
-      )
+        z.tuple([z.string(), z.string()]),
+      ),
     ).toBe(true);
     expect(
       isSameType(
         z.tuple([z.string(), z.string()]),
-        z.tuple([z.string(), z.number()])
-      )
+        z.tuple([z.string(), z.number()]),
+      ),
     ).toBe(false);
     expect(
       isSameType(
         z.tuple([z.string(), z.string()]).rest(z.number()),
-        z.tuple([z.string(), z.string()])
-      )
+        z.tuple([z.string(), z.string()]),
+      ),
     ).toBe(false);
     expect(
       isSameType(
         z.tuple([z.string(), z.string()]).rest(z.number()),
-        z.tuple([z.string(), z.string()]).rest(z.number())
-      )
+        z.tuple([z.string(), z.string()]).rest(z.number()),
+      ),
     ).toBe(true);
 
     expect(isSameType(z.tuple([]).rest(z.number()), z.array(z.number()))).toBe(
-      false
+      false,
     );
   });
 
   test("should compare `and` type", () => {
     expect(
-      isSameType(z.string().and(z.number()), z.string().and(z.number()))
+      isSameType(z.string().and(z.number()), z.string().and(z.number())),
     ).toBe(true);
     expect(
-      isSameType(z.number().and(z.string()), z.number().and(z.string()))
+      isSameType(z.number().and(z.string()), z.number().and(z.string())),
     ).toBe(true);
 
     // order matters
     expect(
-      isSameType(z.number().and(z.string()), z.string().and(z.number()))
+      isSameType(z.number().and(z.string()), z.string().and(z.number())),
     ).toBe(false);
   });
 
   test("should compare `or` type", () => {
     expect(
-      isSameType(z.string().or(z.number()), z.string().or(z.number()))
+      isSameType(z.string().or(z.number()), z.string().or(z.number())),
     ).toBe(true);
     expect(
-      isSameType(z.number().or(z.string()), z.number().or(z.string()))
+      isSameType(z.number().or(z.string()), z.number().or(z.string())),
     ).toBe(true);
 
     // order matters
     expect(
-      isSameType(z.number().or(z.string()), z.string().or(z.number()))
+      isSameType(z.number().or(z.string()), z.string().or(z.number())),
     ).toBe(false);
   });
 
@@ -166,8 +166,8 @@ describe("isSameType", () => {
         z.object({ foo: z.string().readonly() }),
         z.object({
           foo: z.string().readonly(),
-        })
-      )
+        }),
+      ),
     ).toBe(true);
     expect(isSameType(z.string().readonly(), z.string())).toBe(false);
   });

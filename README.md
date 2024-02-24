@@ -20,13 +20,13 @@ isSameType(z.string(), z.string()); // true
 isSameType(z.string(), z.number()); // false
 isSameType(
   z.object({ name: z.string(), other: z.number() }),
-  z.object({ name: z.string() })
+  z.object({ name: z.string() }),
 );
 // false
 
 isCompatibleType(
   z.object({ name: z.string(), other: z.number() }),
-  z.object({ name: z.string() })
+  z.object({ name: z.string() }),
 );
 // true
 ```
@@ -47,7 +47,7 @@ isSameType(
       }
       // return other values to use the default comparison
     },
-  }
+  },
 );
 // true
 ```
@@ -75,7 +75,7 @@ function isSameType(
   b: ZodType,
   options?: {
     interceptor?: (a: ZodType, b: ZodType) => boolean | undefined;
-  }
+  },
 ): boolean;
 ```
 
@@ -87,7 +87,7 @@ function isCompatibleType(
   b: ZodType,
   options?: {
     interceptor?: (a: ZodType, b: ZodType) => boolean | undefined;
-  }
+  },
 ): boolean;
 ```
 

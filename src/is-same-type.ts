@@ -29,7 +29,7 @@ import {
 export const isSameType = (
   a: ZodType,
   b: ZodType,
-  options?: Partial<IsSameTypeOptions>
+  options?: Partial<IsSameTypeOptions>,
 ): boolean => {
   const opts = { ...DEFAULT_COMPARE_TYPE_OPTIONS, ...options };
   const interceptorResult = opts.interceptor(a, b, opts);

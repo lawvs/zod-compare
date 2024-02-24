@@ -23,7 +23,7 @@ export interface IsSameTypeOptions {
   interceptor: (
     a: ZodType,
     b: ZodType,
-    options: IsSameTypeOptions
+    options: IsSameTypeOptions,
   ) => boolean | void;
 }
 
