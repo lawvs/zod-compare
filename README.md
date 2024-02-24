@@ -1,5 +1,7 @@
 # Zod Compare
 
+[![Build](https://github.com/lawvs/zod-compare/actions/workflows/build.yml/badge.svg)](https://github.com/lawvs/zod-compare/actions/workflows/build.yml)
+
 Compare two [Zod](https://zod.dev/) schemas recursively.
 
 `zod-compare` provides functions to compare Zod schemas, allowing you to determine whether two schemas are the same or compatible.
