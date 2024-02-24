@@ -1,6 +1,12 @@
 {
   "name": "zod-compare",
   "version": "0.1.0",
+  "description": "Compare two Zod schemas recursively.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/lawvs/zod-compare.git"
+  },
+  "license": "MIT",
   "author": "whitewater <me@waterwater.moe>",
   "sideEffects": false,
   "type": "module",
@@ -13,8 +19,8 @@
     "build": "tsc && vite build",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
-    "test": "vitest",
     "typeCheck": "tsc --noEmit",
+    "test": "vitest",
     "changeset": "changeset",
     "release": "pnpm run build && changeset publish"
   },
@@ -38,13 +44,13 @@
   "prettier": {},
   "publishConfig": {
     "access": "public",
+    "main": "dist/index.js",
+    "module": "./dist/index.js",
+    "types": "./dist/index.d.ts",
     "exports": {
-      ".": {
-        "import": "./dist/index.js",
-        "require": "./dist/index.cjs",
-        "types": "./dist/index.d.ts"
-      }
-    },
-    "main": "dist/index.js"
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
   }
 }
