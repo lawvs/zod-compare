@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup pnpm
-        uses: pnpm/action-setup@v2
+        uses: pnpm/action-setup@v3
 
       - name: Use Node.js
         uses: actions/setup-node@v4
@@ -35,4 +35,11 @@ jobs:
         run: pnpm run build
 
       - name: Test
-        run: pnpm run test -- --coverage
+        run: pnpm run test --coverage
+
+      - name: Upload test coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: ./coverage
+          if-no-files-found: ignore
