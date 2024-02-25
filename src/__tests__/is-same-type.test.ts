@@ -135,10 +135,9 @@ describe("isSameType", () => {
       isSameType(z.number().and(z.string()), z.number().and(z.string())),
     ).toBe(true);
 
-    // order matters
     expect(
       isSameType(z.number().and(z.string()), z.string().and(z.number())),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   test("should compare `or` type", () => {
@@ -149,10 +148,9 @@ describe("isSameType", () => {
       isSameType(z.number().or(z.string()), z.number().or(z.string())),
     ).toBe(true);
 
-    // order matters
     expect(
       isSameType(z.number().or(z.string()), z.string().or(z.number())),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   test("should compare literal type", () => {

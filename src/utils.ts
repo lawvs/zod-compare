@@ -12,7 +12,6 @@ export interface IsSameTypeOptions {
   ignoreNullable: boolean;
   ignoreReadOnly: false;
   ignoreBranded: boolean;
-  ignoreIntersectionsOrder: false;
   /**
    * A function that provides custom logic for comparing two ZodType instances.
    *
@@ -39,7 +38,6 @@ export const DEFAULT_COMPARE_TYPE_OPTIONS = {
   ignoreReadOnly: false,
   ignoreBranded: false,
   ignoreValidations: true,
-  ignoreIntersectionsOrder: false,
   interceptor: () => {},
 } as const satisfies IsSameTypeOptions;
 

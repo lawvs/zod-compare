@@ -131,18 +131,27 @@ export const isSameType = (
   // ZodIntersection aka and
   if (a instanceof z.ZodIntersection && b instanceof z.ZodIntersection) {
     return (
-      isSameType(a._def.left, b._def.left, opts) &&
-      isSameType(a._def.right, b._def.right, opts)
+      (isSameType(a._def.left, b._def.left, opts) &&
+        isSameType(a._def.right, b._def.right, opts)) ||
+      (isSameType(a._def.left, b._def.right, opts) &&
+        isSameType(a._def.right, b._def.left, opts))
     );
   }
 
   // ZodUnion aka or
   if (a instanceof z.ZodUnion && b instanceof z.ZodUnion) {
     if (a.options.length !== b.options.length) return false;
-    for (let i = 0; i < a.options.length; i++) {
-      if (!isSameType(a.options[i], b.options[i], opts)) return false;
+
+    let bOptions = [...b.options];
+    for (let optionA of a.options) {
+      let matchIndex = bOptions.findIndex((optionB) =>
+        isSameType(optionA, optionB, opts),
+      );
+      if (matchIndex === -1) return false;
+      bOptions.splice(matchIndex, 1);
     }
-    return true;
+
+    return bOptions.length === 0;
   }
 
   // ZodReadonly
