@@ -8,6 +8,8 @@ import {
 /**
  * Check if a the higherType matches the lowerType
  *
+ * @deprecated This a unstable API and still in development
+ *
  * @param higherType The looser type
  * @param lowerType The stricter type
  *
