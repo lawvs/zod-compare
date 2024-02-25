@@ -1,6 +1,7 @@
 # Zod Compare
 
 [![Build](https://github.com/lawvs/zod-compare/actions/workflows/build.yml/badge.svg)](https://github.com/lawvs/zod-compare/actions/workflows/build.yml)
+[![npm](https://img.shields.io/npm/v/zod-compare)](https://www.npmjs.com/package/zod-compare)
 
 Compare two [Zod](https://zod.dev/) schemas recursively.
 
