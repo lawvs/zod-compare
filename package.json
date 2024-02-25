@@ -2,6 +2,15 @@
   "name": "zod-compare",
   "version": "0.1.0",
   "description": "Compare two Zod schemas recursively.",
+  "keywords": [
+    "zod",
+    "compare",
+    "comparator",
+    "schema",
+    "type",
+    "typescript",
+    "validation"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/lawvs/zod-compare.git"
