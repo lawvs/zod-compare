@@ -132,5 +132,12 @@ describe("isCompatibleType", () => {
         z.number().or(z.string()).or(z.boolean()),
       ),
     ).toBe(true);
+
+    expect(isCompatibleType(z.string().or(z.boolean()), z.string())).toBe(
+      false,
+    );
+    expect(
+      isCompatibleType(z.string().or(z.boolean()), z.string().or(z.number())),
+    ).toBe(false);
   });
 });

@@ -2,6 +2,7 @@ import { z, type ZodType } from "zod";
 import { isSameType } from "./is-same-type.ts";
 import {
   DEFAULT_COMPARE_TYPE_OPTIONS,
+  flatUnwrapUnion,
   type IsCompatibleTypeOptions,
 } from "./utils.ts";
 
@@ -56,21 +57,25 @@ export const isCompatibleType = (
 
   // ZodUnion aka or
   if (higherType instanceof z.ZodUnion && lowerType instanceof z.ZodUnion) {
-    for (let i = 0; i < higherType.options.length; i++) {
-      const match = lowerType.options.some((option: ZodType) =>
-        isCompatibleType(higherType.options[i], option, opts),
+    const higherOptions = flatUnwrapUnion(higherType);
+    const lowerOptions = flatUnwrapUnion(lowerType);
+    for (let i = 0; i < higherOptions.length; i++) {
+      const match = lowerOptions.some((option: ZodType) =>
+        isCompatibleType(higherOptions[i], option, opts),
       );
       if (!match) return false;
     }
     return true;
   }
   if (higherType instanceof z.ZodUnion) {
-    return higherType.options.every((option: ZodType) =>
+    const higherOptions = flatUnwrapUnion(higherType);
+    return higherOptions.every((option: ZodType) =>
       isCompatibleType(option, lowerType, opts),
     );
   }
   if (lowerType instanceof z.ZodUnion) {
-    return lowerType.options.some((option: ZodType) =>
+    const lowerOptions = flatUnwrapUnion(lowerType);
+    return lowerOptions.some((option: ZodType) =>
       isCompatibleType(higherType, option, opts),
     );
   }
