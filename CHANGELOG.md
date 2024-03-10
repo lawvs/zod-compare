@@ -1,5 +1,12 @@
 # zod-compare
 
+## 0.1.4
+
+### Patch Changes
+
+- f19f193: fix: correctly compare union types in isCompatibleType
+- cd00e6b: fix: flatten union in isCompatibleType
+
 ## 0.1.3
 
 ### Patch Changes
