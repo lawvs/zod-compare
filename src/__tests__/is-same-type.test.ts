@@ -151,6 +151,16 @@ describe("isSameType", () => {
     expect(
       isSameType(z.number().or(z.string()), z.string().or(z.number())),
     ).toBe(true);
+
+    // should flat union type
+    expect(
+      isSameType(
+        // (number | string) | boolean
+        z.number().or(z.string()).or(z.boolean()),
+        // (string | boolean) | number
+        z.string().or(z.boolean()).or(z.number()),
+      ),
+    ).toBe(true);
   });
 
   test("should compare literal type", () => {

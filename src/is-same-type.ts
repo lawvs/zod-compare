@@ -4,6 +4,7 @@ import {
   type IsSameTypeOptions,
   DEFAULT_COMPARE_TYPE_OPTIONS,
   isPrimitiveType,
+  flatUnwrapUnion,
 } from "./utils.ts";
 
 /**
@@ -140,10 +141,11 @@ export const isSameType = (
 
   // ZodUnion aka or
   if (a instanceof z.ZodUnion && b instanceof z.ZodUnion) {
-    if (a.options.length !== b.options.length) return false;
+    const aOptions = flatUnwrapUnion(a as z.ZodUnion<z.ZodUnionOptions>);
+    const bOptions = flatUnwrapUnion(b as z.ZodUnion<z.ZodUnionOptions>);
+    if (aOptions.length !== bOptions.length) return false;
 
-    let bOptions = [...b.options];
-    for (let optionA of a.options) {
+    for (let optionA of aOptions) {
       let matchIndex = bOptions.findIndex((optionB) =>
         isSameType(optionA, optionB, opts),
       );
