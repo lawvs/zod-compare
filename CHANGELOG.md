@@ -1,5 +1,11 @@
 # zod-compare
 
+## 0.1.3
+
+### Patch Changes
+
+- df211c2: feat: flat union type
+
 ## 0.1.2
 
 ### Patch Changes
