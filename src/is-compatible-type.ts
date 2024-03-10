@@ -58,7 +58,7 @@ export const isCompatibleType = (
   if (higherType instanceof z.ZodUnion && lowerType instanceof z.ZodUnion) {
     for (let i = 0; i < higherType.options.length; i++) {
       const match = lowerType.options.some((option: ZodType) =>
-        isCompatibleType(option, lowerType.options[i], opts),
+        isCompatibleType(higherType.options[i], option, opts),
       );
       if (!match) return false;
     }
