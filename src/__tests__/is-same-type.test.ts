@@ -19,6 +19,12 @@ describe("isSameType", () => {
     );
   });
 
+  test("compare any/unknown type", () => {
+    expect(isSameType(z.any(), z.any())).toBe(true);
+    expect(isSameType(z.unknown(), z.unknown())).toBe(true);
+    expect(isSameType(z.any(), z.unknown())).toBe(false);
+  });
+
   test("should return false when compare branded type", () => {
     expect(isSameType(z.string().brand("test"), z.string())).toBe(false);
     expect(isSameType(z.string().brand("test"), z.string().brand("test"))).toBe(
@@ -178,5 +184,44 @@ describe("isSameType", () => {
       ),
     ).toBe(true);
     expect(isSameType(z.string().readonly(), z.string())).toBe(false);
+  });
+});
+
+// See https://zod.dev/?id=coercion-for-primitives
+describe("coerce", () => {
+  test("can compare coerce type", () => {
+    expect(isSameType(z.coerce.string(), z.coerce.number())).toBe(false);
+    expect(isSameType(z.coerce.string(), z.number())).toBe(false);
+    expect(isSameType(z.coerce.string(), z.coerce.string())).toBe(true);
+    expect(isSameType(z.coerce.string(), z.coerce.string())).toBe(true);
+  });
+
+  test("can compare coerce type with normal type", () => {
+    expect(isSameType(z.coerce.string(), z.string())).toBe(true);
+    expect(isSameType(z.coerce.number(), z.number())).toBe(true);
+  });
+
+  test("can compare coerce type with function", () => {
+    expect(
+      isSameType(
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+      ),
+    ).toBe(true);
+    expect(
+      isSameType(
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+        z.function().args(z.number(), z.string()).returns(z.boolean()),
+      ),
+    ).toBe(true);
   });
 });
