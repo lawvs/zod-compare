@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { isSameType } from "../is-same-type.ts";
+import type { CompareContext } from "../rules.ts";
 
 describe("isSameType", () => {
   test("should ref same type", () => {
@@ -184,6 +185,49 @@ describe("isSameType", () => {
       ),
     ).toBe(true);
     expect(isSameType(z.string().readonly(), z.string())).toBe(false);
+  });
+});
+
+describe("isSameType context", () => {
+  test("should context work", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(
+      z.object({ name: z.string() }),
+      z.object({ name: z.string() }),
+      context,
+    );
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(8);
+    expect(context?.stacks?.at(-1)?.name).toEqual("compare ZodObject");
+  });
+
+  test("should context work with different primitive type", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(z.number(), z.string(), context);
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(3);
+    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
+  });
+
+  test("should context work with different type", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(
+      z.object({ name: z.number() }),
+      z.object({ name: z.string() }),
+      context,
+    );
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(11);
+    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
   });
 });
 
