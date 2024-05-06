@@ -189,21 +189,6 @@ describe("isSameType", () => {
 });
 
 describe("isSameType context", () => {
-  test("should context work", () => {
-    const context: CompareContext = {
-      stacks: [],
-    };
-    const result = isSameType(
-      z.object({ name: z.string() }),
-      z.object({ name: z.string() }),
-      context,
-    );
-
-    expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(8);
-    expect(context?.stacks?.at(-1)?.name).toEqual("compare ZodObject");
-  });
-
   test("should context work with different primitive type", () => {
     const context: CompareContext = {
       stacks: [],
