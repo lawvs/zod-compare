@@ -1,3 +1,4 @@
-export { isSameType } from "./is-same-type.ts";
 export { isCompatibleType } from "./is-compatible-type.ts";
-export type { IsSameTypeOptions } from "./utils.ts";
+export { createIsSameTypeFn, isSameType } from "./is-same-type.ts";
+export { defineCompareRule, isSameTypePresetRules } from "./rules.ts";
+export type * from "./types.ts";

@@ -1,10 +1,6 @@
 import { z, type ZodType } from "zod";
 import { isSameType } from "./is-same-type.ts";
-import {
-  DEFAULT_COMPARE_TYPE_OPTIONS,
-  flatUnwrapUnion,
-  type IsCompatibleTypeOptions,
-} from "./utils.ts";
+import { flatUnwrapUnion } from "./utils.ts";
 
 /**
  * Check if a the higherType matches the lowerType
@@ -28,17 +24,8 @@ import {
 export const isCompatibleType = (
   higherType: ZodType,
   lowerType: ZodType,
-  options?: Partial<IsCompatibleTypeOptions>,
 ): boolean => {
-  const opts: IsCompatibleTypeOptions = {
-    ...DEFAULT_COMPARE_TYPE_OPTIONS,
-    ...options,
-  };
-  const interceptorResult = opts.interceptor(higherType, lowerType, opts);
-  if (interceptorResult === true || interceptorResult === false) {
-    return interceptorResult;
-  }
-  if (isSameType(higherType, lowerType, opts)) {
+  if (isSameType(higherType, lowerType)) {
     return true;
   }
 
@@ -52,7 +39,7 @@ export const isCompatibleType = (
     lowerType instanceof z.ZodOptional ||
     lowerType instanceof z.ZodNullable
   ) {
-    return isCompatibleType(higherType, lowerType.unwrap(), opts);
+    return isCompatibleType(higherType, lowerType.unwrap());
   }
 
   // ZodUnion aka or
@@ -61,7 +48,7 @@ export const isCompatibleType = (
     const lowerOptions = flatUnwrapUnion(lowerType);
     for (let i = 0; i < higherOptions.length; i++) {
       const match = lowerOptions.some((option: ZodType) =>
-        isCompatibleType(higherOptions[i], option, opts),
+        isCompatibleType(higherOptions[i], option),
       );
       if (!match) return false;
     }
@@ -70,13 +57,13 @@ export const isCompatibleType = (
   if (higherType instanceof z.ZodUnion) {
     const higherOptions = flatUnwrapUnion(higherType);
     return higherOptions.every((option: ZodType) =>
-      isCompatibleType(option, lowerType, opts),
+      isCompatibleType(option, lowerType),
     );
   }
   if (lowerType instanceof z.ZodUnion) {
     const lowerOptions = flatUnwrapUnion(lowerType);
     return lowerOptions.some((option: ZodType) =>
-      isCompatibleType(higherType, option, opts),
+      isCompatibleType(higherType, option),
     );
   }
 
@@ -93,7 +80,7 @@ export const isCompatibleType = (
       return false;
     for (const key in subTypeShape) {
       if (!(key in superTypeShape)) return false;
-      if (!isCompatibleType(superTypeShape[key], subTypeShape[key], opts)) {
+      if (!isCompatibleType(superTypeShape[key], subTypeShape[key])) {
         return false;
       }
     }
@@ -102,21 +89,21 @@ export const isCompatibleType = (
 
   // ZodArray
   if (higherType instanceof z.ZodArray && lowerType instanceof z.ZodArray) {
-    return isCompatibleType(higherType.element, lowerType.element, opts);
+    return isCompatibleType(higherType.element, lowerType.element);
   }
 
   // ZodTuple
   if (higherType instanceof z.ZodTuple && lowerType instanceof z.ZodTuple) {
     if (higherType.items.length < lowerType.items.length) return false;
     for (let i = 0; i < lowerType.items.length; i++) {
-      if (!isCompatibleType(higherType.items[i], lowerType.items[i], opts)) {
+      if (!isCompatibleType(higherType.items[i], lowerType.items[i])) {
         return false;
       }
     }
     // Check rest
     if (lowerType._def.rest) {
       if (!higherType._def.rest) return false;
-      return isCompatibleType(higherType._def.rest, lowerType._def.rest, opts);
+      return isCompatibleType(higherType._def.rest, lowerType._def.rest);
     }
     return true;
   }

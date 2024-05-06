@@ -1,6 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { isSameType } from "../is-same-type.ts";
+import type { CompareContext } from "../types.ts";
 
 describe("isSameType", () => {
   test("should ref same type", () => {
@@ -17,6 +18,12 @@ describe("isSameType", () => {
     expect(isSameType(z.string().nullable(), z.string().optional())).toBe(
       false,
     );
+  });
+
+  test("compare any/unknown type", () => {
+    expect(isSameType(z.any(), z.any())).toBe(true);
+    expect(isSameType(z.unknown(), z.unknown())).toBe(true);
+    expect(isSameType(z.any(), z.unknown())).toBe(false);
   });
 
   test("should return false when compare branded type", () => {
@@ -178,5 +185,72 @@ describe("isSameType", () => {
       ),
     ).toBe(true);
     expect(isSameType(z.string().readonly(), z.string())).toBe(false);
+  });
+});
+
+describe("isSameType context", () => {
+  test("should context work with different primitive type", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(z.number(), z.string(), context);
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(3);
+    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
+  });
+
+  test("should context work with different type", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(
+      z.object({ name: z.number() }),
+      z.object({ name: z.string() }),
+      context,
+    );
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(11);
+    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
+  });
+});
+
+// See https://zod.dev/?id=coercion-for-primitives
+describe("coerce", () => {
+  test("can compare coerce type", () => {
+    expect(isSameType(z.coerce.string(), z.coerce.number())).toBe(false);
+    expect(isSameType(z.coerce.string(), z.number())).toBe(false);
+    expect(isSameType(z.coerce.string(), z.coerce.string())).toBe(true);
+    expect(isSameType(z.coerce.string(), z.coerce.string())).toBe(true);
+  });
+
+  test("can compare coerce type with normal type", () => {
+    expect(isSameType(z.coerce.string(), z.string())).toBe(true);
+    expect(isSameType(z.coerce.number(), z.number())).toBe(true);
+  });
+
+  test("can compare coerce type with function", () => {
+    expect(
+      isSameType(
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+      ),
+    ).toBe(true);
+    expect(
+      isSameType(
+        z
+          .function()
+          .args(z.coerce.number(), z.coerce.string())
+          .returns(z.boolean()),
+        z.function().args(z.number(), z.string()).returns(z.boolean()),
+      ),
+    ).toBe(true);
   });
 });
