@@ -10,7 +10,14 @@ Compare two [Zod](https://zod.dev/) schemas recursively.
 ## Installation
 
 ```bash
-npm install zod zod-compare --save
+# npm
+npm install zod zod-compare
+
+# yarn
+yarn add zod zod-compare
+
+# pnpm
+pnpm add zod zod-compare
 ```
 
 ## Usage
@@ -36,35 +43,55 @@ isCompatibleType(
 
 ## Advanced Usage
 
-`isSameType` also offers an `interceptor` option, enabling you to tailor the comparison process according to your needs.
+### Custom Rules
+
+You can use `createIsSameTypeFn` to create a custom comparison function.
 
 ```ts
-isSameType(
-  z.object({ name: z.string(), other: z.number() }),
-  z.object({ name: z.string() }),
-  {
-    interceptor: (a, b) => {
-      if (a instanceof z.ZodObject && b instanceof z.ZodObject) {
-        // return boolean to override the comparison result
-        return a.shape.name === b.shape.name;
-      }
-      // return other values to use the default comparison
-    },
+import {
+  createIsSameTypeFn,
+  isSameTypePresetRules,
+  defineCompareRule,
+} from "zod-compare";
+
+const customRule = defineCompareRule(
+  "custom rule",
+  (a, b, next, recheck, context) => {
+    if (a.description !== b.description) {
+      return false;
+    }
+    return next();
   },
 );
-// true
+
+const customIsSameType = createIsSameTypeFn([
+  customRule,
+  ...isSameTypePresetRules,
+]);
+```
+
+## Debugging
+
+You can pass a `context` object to the comparison functions to get more information about the comparison process.
+
+```ts
+const context = {
+  stacks: [],
+};
+isSameType(
+  z.object({ name: z.string(), other: z.number() }),
+  z.object({ name: z.string(), other: z.string() }),
+  context,
+);
+
+console.log(context.stacks);
 ```
 
 ## Caveats
 
-`zod-compare` is designed to compare Zod schemas created by the developer.
-We do not have plans to support comparing schemas that include custom validation functions or other advanced Zod features.
+The default rules `isSameTypePresetRules` will disregard any custom validations like `min`, `max`, `length`, among others. Additionally, these default rules cannot be utilized for comparing `ZodLazy`, `ZodEffects`, `ZodDefault`, `ZodCatch`, `ZodPipeline`, `ZodTransformer`, `ZodError` types.
 
-This tool will disregard any custom validations like `min`, `max`, `length`, among others.
-
-Furthermore, it cannot be utilized for comparing `ZodLazy`, `ZodEffects`, `ZodDefault`, `ZodCatch`, `ZodPipeline`, `ZodTransformer`, `ZodError` types.
-
-But you can use the `interceptor` option to customize the comparison process.
+If there is a necessity to compare these types, custom rules can be established using `defineCompareRule`.
 
 ## API
 
@@ -73,25 +100,55 @@ But you can use the `interceptor` option to customize the comparison process.
 Compares two Zod schemas and returns `true` if they are the same.
 
 ```ts
-function isSameType(
-  a: ZodType,
-  b: ZodType,
-  options?: {
-    interceptor?: (a: ZodType, b: ZodType) => boolean | undefined;
-  },
-): boolean;
+const isSameType: (a: ZodType, b: ZodType, context?: CompareContext) => boolean;
 ```
 
-### `isCompatibleType` (Unstable API)
+### `createIsSameTypeFn`
+
+Creates a custom comparison function.
 
 ```ts
-function isCompatibleType(
+const defineCompareRule: (
+  name: string,
+  rule: CompareFn,
+) => {
+  name: string;
+  rule: CompareFn;
+};
+
+const createIsSameTypeFn: (rules: CompareRule[]) => typeof isSameType;
+```
+
+### `isCompatibleType` (Experimental API)
+
+Compares two Zod schemas and returns `true` if they are compatible.
+
+```ts
+function isCompatibleType(a: ZodType, b: ZodType): boolean;
+```
+
+### Types
+
+```ts
+type CompareContext = {
+  stacks?: {
+    name: string;
+    target: [a: ZodType, b: ZodType];
+  }[];
+} & Record<string, unknown>;
+
+type CompareFn = (
   a: ZodType,
   b: ZodType,
-  options?: {
-    interceptor?: (a: ZodType, b: ZodType) => boolean | undefined;
-  },
-): boolean;
+  next: () => boolean,
+  recheck: (a: ZodType, b: ZodType) => boolean,
+  context: CompareContext,
+) => boolean;
+
+type CompareRule = {
+  name: string;
+  compare: CompareFn;
+};
 ```
 
 ## License
