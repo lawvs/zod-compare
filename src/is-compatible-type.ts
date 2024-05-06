@@ -28,6 +28,9 @@ import {
 export const isCompatibleType = (
   higherType: ZodType,
   lowerType: ZodType,
+  /**
+   * @deprecated Options will be removed in the future
+   */
   options?: Partial<IsCompatibleTypeOptions>,
 ): boolean => {
   const opts: IsCompatibleTypeOptions = {
@@ -38,7 +41,7 @@ export const isCompatibleType = (
   if (interceptorResult === true || interceptorResult === false) {
     return interceptorResult;
   }
-  if (isSameType(higherType, lowerType, opts)) {
+  if (isSameType(higherType, lowerType)) {
     return true;
   }
 
