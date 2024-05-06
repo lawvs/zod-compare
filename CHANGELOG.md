@@ -1,5 +1,13 @@
 # zod-compare
 
+## 0.2.0
+
+### Minor Changes
+
+- ff25a46: refactor!: replace misc options with middleware
+
+  BREAKING CHANGE: The `options` object has been removed and replaced with custom rules.
+
 ## 0.1.4
 
 ### Patch Changes
