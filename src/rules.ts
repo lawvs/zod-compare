@@ -21,7 +21,7 @@ export type CompareRule = {
   compare: CompareFn;
 };
 
-export const defineRule = (name: string, rule: CompareFn) => ({
+export const defineCompareRule = (name: string, rule: CompareFn) => ({
   name,
   rule,
 });
@@ -307,6 +307,15 @@ export const strictIsSameTypeRules = [
         return false;
       }
       if ("corece" in b._def) {
+        return false;
+      }
+      return next();
+    },
+  },
+  {
+    name: "compare description",
+    compare: (a, b, next) => {
+      if (a.description !== b.description) {
         return false;
       }
       return next();
