@@ -1,25 +1,6 @@
-import { z, type ZodType } from "zod";
+import { z } from "zod";
+import type { CompareFn, CompareRule } from "./types.ts";
 import { flatUnwrapUnion, isPrimitiveType } from "./utils.ts";
-
-export type CompareContext = {
-  stacks?: {
-    name: string;
-    target: [a: ZodType, b: ZodType];
-  }[];
-} & Record<string, unknown>;
-
-type CompareFn = (
-  a: ZodType,
-  b: ZodType,
-  next: () => boolean,
-  recheck: (a: ZodType, b: ZodType) => boolean,
-  context: CompareContext,
-) => boolean;
-
-export type CompareRule = {
-  name: string;
-  compare: CompareFn;
-};
 
 export const defineCompareRule = (name: string, rule: CompareFn) => ({
   name,

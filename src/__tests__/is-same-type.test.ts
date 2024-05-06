@@ -1,7 +1,7 @@
 import { describe, expect, test } from "vitest";
 import { z } from "zod";
 import { isSameType } from "../is-same-type.ts";
-import type { CompareContext } from "../rules.ts";
+import type { CompareContext } from "../types.ts";
 
 describe("isSameType", () => {
   test("should ref same type", () => {

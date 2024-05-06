@@ -1,9 +1,6 @@
 import type { ZodType } from "zod";
-import {
-  isSameTypePresetRules,
-  type CompareContext,
-  type CompareRule,
-} from "./rules.ts";
+import { isSameTypePresetRules } from "./rules.ts";
+import { type CompareContext, type CompareRule } from "./types.ts";
 
 export const createIsSameTypeFn = (rules: CompareRule[]) => {
   const isSameTypeFn = (
