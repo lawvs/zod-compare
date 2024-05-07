@@ -1,4 +1,4 @@
-# Zod Compare
+# ⚖️ Zod Compare
 
 [![Build](https://github.com/lawvs/zod-compare/actions/workflows/build.yml/badge.svg)](https://github.com/lawvs/zod-compare/actions/workflows/build.yml)
 [![npm](https://img.shields.io/npm/v/zod-compare)](https://www.npmjs.com/package/zod-compare)
@@ -45,18 +45,19 @@ isCompatibleType(
 
 ### Custom Rules
 
-You can use `createIsSameTypeFn` to create a custom comparison function.
+You can use `createCompareFn` to create a custom comparison function.
 
 ```ts
 import {
-  createIsSameTypeFn,
+  createCompareFn,
   isSameTypePresetRules,
   defineCompareRule,
 } from "zod-compare";
 
 const customRule = defineCompareRule(
-  "custom rule",
+  "compare description",
   (a, b, next, recheck, context) => {
+    // If the schemas are not having the same description, return false
     if (a.description !== b.description) {
       return false;
     }
@@ -64,7 +65,7 @@ const customRule = defineCompareRule(
   },
 );
 
-const customIsSameType = createIsSameTypeFn([
+const strictIsSameType = createCompareFn([
   customRule,
   ...isSameTypePresetRules,
 ]);
@@ -84,6 +85,7 @@ isSameType(
   context,
 );
 
+// type stacks = { name: string; target: [a: ZodType, b: ZodType]; }[]
 console.log(context.stacks);
 ```
 
@@ -100,15 +102,19 @@ If there is a necessity to compare these types, custom rules can be established 
 Compares two Zod schemas and returns `true` if they are the same.
 
 ```ts
-const isSameType: (a: ZodType, b: ZodType, context?: CompareContext) => boolean;
+import { isSameType } from "zod-compare";
+
+type isSameType: (a: ZodType, b: ZodType, context?: CompareContext) => boolean;
 ```
 
-### `createIsSameTypeFn`
+### `createCompareFn`
 
 Creates a custom comparison function.
 
 ```ts
-const defineCompareRule: (
+import { createCompareFn, defineCompareRule } from "zod-compare";
+
+type defineCompareRule = (
   name: string,
   rule: CompareFn,
 ) => {
@@ -116,7 +122,11 @@ const defineCompareRule: (
   rule: CompareFn;
 };
 
-const createIsSameTypeFn: (rules: CompareRule[]) => typeof isSameType;
+type createCompareFn = (rules: CompareRule[]) => typeof isSameType;
+
+// Example
+const isSameType = createCompareFn(isSameTypePresetRules);
+const isCompatibleType = createCompareFn(isCompatibleTypePresetRules);
 ```
 
 ### `isCompatibleType` (Experimental API)
@@ -124,7 +134,24 @@ const createIsSameTypeFn: (rules: CompareRule[]) => typeof isSameType;
 Compares two Zod schemas and returns `true` if they are compatible.
 
 ```ts
-function isCompatibleType(a: ZodType, b: ZodType): boolean;
+import { isCompatibleType } from "zod-compare";
+// The `higherType` should be a looser type
+// The `lowerType` should be a stricter type
+type isCompatibleType: (higherType: ZodType, lowerType: ZodType) => boolean;
+```
+
+### Preset Rules
+
+You can use the preset rules `isSameTypePresetRules` and `isCompatibleTypePresetRules` to create custom comparison functions.
+
+```ts
+import { isSameTypePresetRules, isCompatibleTypePresetRules } from "zod-compare";
+
+type isSameTypePresetRules: CompareRule[];
+type isCompatibleTypePresetRules: CompareRule[];
+
+// Example
+const yourIsSameType = createCompareFn([customRule, ...isSameTypePresetRules]);
 ```
 
 ### Types
