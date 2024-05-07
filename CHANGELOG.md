@@ -1,5 +1,13 @@
 # zod-compare
 
+## 0.3.0
+
+### Minor Changes
+
+- b40d479: refactor: redesign isCompatibleType with new rule style
+
+  The function `createIsSameTypeFn` has been renamed to `createCompareFn`.
+
 ## 0.2.0
 
 ### Minor Changes
