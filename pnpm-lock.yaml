@@ -31,7 +31,7 @@ importers:
         version: 1.6.0(@types/node@12.20.55)
       zod:
         specifier: ^3.23.6
-        version: 3.23.6
+        version: 3.23.8
 
 packages:
 
@@ -1891,8 +1891,8 @@ packages:
     engines: {node: '>=8.0.0'}
     hasBin: true
 
-  zod@3.23.6:
-    resolution: {integrity: sha512-RTHJlZhsRbuA8Hmp/iNL7jnfc4nZishjsanDAfEY1QpDQZCahUp3xDzl+zfweE9BklxMUcgBgS1b7Lvie/ZVwA==}
+  zod@3.23.8:
+    resolution: {integrity: sha512-XBx9AXhXktjUqnepgTiE5flcKIYWi/rme0Eaj+5Y0lftuGBq+jyRu/md4WnuxqgP1ubdpNCsYEYPxrzVHD8d6g==}
 
 snapshots:
 
@@ -3939,4 +3939,4 @@ snapshots:
     optionalDependencies:
       commander: 9.5.0
 
-  zod@3.23.6: {}
+  zod@3.23.8: {}
