@@ -1,5 +1,11 @@
 # zod-compare
 
+## 0.3.1
+
+### Patch Changes
+
+- 95175c4: feat: add compare result to debug stack
+
 ## 0.3.0
 
 ### Minor Changes
