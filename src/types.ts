@@ -4,6 +4,7 @@ export type CompareContext = {
   stacks?: {
     name: string;
     target: [a: ZodType, b: ZodType];
+    result: boolean;
   }[];
 } & Record<string, unknown>;
 

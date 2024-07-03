@@ -85,7 +85,7 @@ isSameType(
   context,
 );
 
-// type stacks = { name: string; target: [a: ZodType, b: ZodType]; }[]
+// type stacks = { name: string; target: [a: ZodType, b: ZodType]; result: boolean; }[]
 console.log(context.stacks);
 ```
 

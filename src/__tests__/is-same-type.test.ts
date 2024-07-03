@@ -197,7 +197,7 @@ describe("isSameType context", () => {
 
     expect(result).toBe(false);
     expect(context?.stacks?.length).toEqual(3);
-    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
+    expect(context?.stacks?.at(0)?.name).toEqual("compare constructor");
   });
 
   test("should context work with different type", () => {
@@ -212,7 +212,40 @@ describe("isSameType context", () => {
 
     expect(result).toBe(false);
     expect(context?.stacks?.length).toEqual(11);
-    expect(context?.stacks?.at(-1)?.name).toEqual("compare constructor");
+    expect(context?.stacks?.at(0)?.name).toEqual("compare constructor");
+  });
+
+  test("should context result works", () => {
+    const context: CompareContext = {
+      stacks: [],
+    };
+    const result = isSameType(
+      z.tuple([z.string()]),
+      z.tuple([z.string()]).rest(z.unknown()),
+      context,
+    );
+
+    expect(result).toBe(false);
+    expect(context?.stacks?.length).toEqual(17);
+    expect(context?.stacks?.map((i) => [i.name, i.result])).toEqual([
+      ["is same primitive", true],
+      ["unwrap ZodType", true],
+      ["compare ZodBranded", true],
+      ["compare typeName", true],
+      ["compare constructor", true],
+      ["compare reference", true],
+      ["undefined check", true],
+      ["compare ZodTuple", false],
+      ["compare ZodArray", false],
+      ["compare ZodObject", false],
+      ["is same primitive", false],
+      ["unwrap ZodType", false],
+      ["compare ZodBranded", false],
+      ["compare typeName", false],
+      ["compare constructor", false],
+      ["compare reference", false],
+      ["undefined check", false],
+    ]);
   });
 });
 

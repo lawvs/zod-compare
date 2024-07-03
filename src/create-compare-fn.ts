@@ -18,20 +18,23 @@ export const createCompareFn = (rules: CompareRule[]) => {
       prevIndex = index;
       const rule = rules[index];
 
-      if ("stacks" in context && Array.isArray(context.stacks)) {
-        context.stacks.push({
-          name: rule.name,
-          target: [a, b],
-        });
-      }
-
-      return rule.compare(
+      const compareResult = rule.compare(
         a,
         b,
         () => runner(index + 1),
         (a, b) => isSameTypeFn(a, b, context),
         context,
       );
+
+      if ("stacks" in context && Array.isArray(context.stacks)) {
+        context.stacks.push({
+          name: rule.name,
+          target: [a, b],
+          result: compareResult,
+        });
+      }
+
+      return compareResult;
     };
 
     return runner(0);
