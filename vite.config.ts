@@ -16,7 +16,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      // TODO fix it
+      // TODO fix it https://github.com/qmhc/vite-plugin-dts/issues/399
       // rollupTypes: true,
       include: ["src/**/*.ts", "src/**/*.d.ts"],
       exclude: ["src/**/__tests__/*"],
