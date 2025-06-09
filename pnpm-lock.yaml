@@ -34,7 +34,7 @@ importers:
         version: 2.1.8(@types/node@12.20.55)
       zod:
         specifier: ^3.24.1
-        version: 3.25.48
+        version: 3.25.56
 
 packages:
 
@@ -1601,8 +1601,8 @@ packages:
   yallist@4.0.0:
     resolution: {integrity: sha512-3wdGidZyq5PB084XLES5TpOSRA3wjXAlIWMhum2kRcv/41Sn2emQ0dycQW4uZXLejwKvg6EsvbdlVL+FYEct7A==}
 
-  zod@3.25.48:
-    resolution: {integrity: sha512-0X1mz8FtgEIvaxGjdIImYpZEaZMrund9pGXm3M6vM7Reba0e2eI71KPjSCGXBfwKDPwPoywf6waUKc3/tFvX2Q==}
+  zod@3.25.56:
+    resolution: {integrity: sha512-rd6eEF3BTNvQnR2e2wwolfTmUTnp70aUTqr0oaGbHifzC3BKJsoV+Gat8vxUMR1hwOKBs6El+qWehrHbCpW6SQ==}
 
 snapshots:
 
@@ -3077,4 +3077,4 @@ snapshots:
 
   yallist@4.0.0: {}
 
-  zod@3.25.48: {}
+  zod@3.25.56: {}
