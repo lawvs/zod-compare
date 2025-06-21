@@ -1,5 +1,11 @@
 # zod-compare
 
+## 1.1.0
+
+### Minor Changes
+
+- [`c3ff484`](https://github.com/lawvs/zod-compare/commit/c3ff484af88a8faa195e868982f402871ea342c7) Thanks [@lawvs](https://github.com/lawvs)! - Upgrade dependencies
+
 ## 1.0.0
 
 ### Major Changes
