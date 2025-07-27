@@ -1,4 +1,5 @@
-import type { ZodType } from "zod";
+import type { ZodType } from "zod/v3";
+
 import { type CompareContext, type CompareRule } from "./types.ts";
 
 export const createCompareFn = (rules: CompareRule[]) => {

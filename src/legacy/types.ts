@@ -1,4 +1,4 @@
-import { type ZodType } from "zod";
+import { type ZodType } from "zod/v3";
 
 export type CompareContext = {
   stacks?: {

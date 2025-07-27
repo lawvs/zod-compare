@@ -1,5 +1,5 @@
 import { describe, expect, test } from "vitest";
-import { z } from "zod";
+import { z } from "zod/v3";
 import { isSameType } from "../is-same-type.ts";
 import type { CompareContext } from "../types.ts";
 
