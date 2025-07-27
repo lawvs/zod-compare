@@ -45,7 +45,7 @@
     "zod": "^3.25.67"
   },
   "peerDependencies": {
-    "zod": "^3.22.4"
+    "zod": "^3.25.0"
   },
   "packageManager": "pnpm@9.0.6",
   "engines": {
