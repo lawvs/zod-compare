@@ -42,7 +42,7 @@
     "vite": "^7.0.0",
     "vite-plugin-dts": "^4.3.0",
     "vitest": "^3.2.4",
-    "zod": "^3.25.67"
+    "zod": "^4.0.17"
   },
   "peerDependencies": {
     "zod": "^3.22.4"
