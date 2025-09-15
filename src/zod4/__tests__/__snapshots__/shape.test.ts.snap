@@ -1,0 +1,1315 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`snapshot > should z.array() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "element": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "array",
+    },
+  },
+  "def": {
+    "element": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "array",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.array() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "element": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "array",
+    },
+  },
+  "def": {
+    "element": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "array",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.enum() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "entries": {
+        "bar": "bar",
+        "baz": "baz",
+        "foo": "foo",
+      },
+      "type": "enum",
+    },
+  },
+  "def": {
+    "entries": {
+      "bar": "bar",
+      "baz": "baz",
+      "foo": "foo",
+    },
+    "type": "enum",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.enum() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "entries": {
+        "bar": "bar",
+        "baz": "baz",
+        "foo": "foo",
+      },
+      "type": "enum",
+    },
+  },
+  "def": {
+    "entries": {
+      "bar": "bar",
+      "baz": "baz",
+      "foo": "foo",
+    },
+    "type": "enum",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.function() match snapshot 1`] = `
+$ZodFunction {
+  "_def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [
+            {
+              "_zod": {
+                "def": {
+                  "type": "string",
+                },
+              },
+              "def": {
+                "type": "string",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+          ],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+  "def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [
+            {
+              "_zod": {
+                "def": {
+                  "type": "string",
+                },
+              },
+              "def": {
+                "type": "string",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+          ],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+}
+`;
+
+exports[`snapshot > should z.function() match snapshot 2`] = `
+$ZodFunction {
+  "_def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [
+            {
+              "_zod": {
+                "def": {
+                  "type": "string",
+                },
+              },
+              "def": {
+                "type": "string",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+          ],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+  "def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [
+            {
+              "_zod": {
+                "def": {
+                  "type": "string",
+                },
+              },
+              "def": {
+                "type": "string",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+          ],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+}
+`;
+
+exports[`snapshot > should z.literal() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "type": "literal",
+      "values": [
+        "test",
+      ],
+    },
+  },
+  "def": {
+    "type": "literal",
+    "values": [
+      "test",
+    ],
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.literal() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "type": "literal",
+      "values": [
+        "test",
+      ],
+    },
+  },
+  "def": {
+    "type": "literal",
+    "values": [
+      "test",
+    ],
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.object() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "shape": {
+        "bar": {
+          "_zod": {
+            "def": {
+              "innerType": {
+                "_zod": {
+                  "def": {
+                    "checks": [],
+                    "type": "number",
+                  },
+                },
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+                "~standard": {
+                  "validate": [Function],
+                  "vendor": "zod",
+                  "version": 1,
+                },
+              },
+              "type": "nullable",
+            },
+          },
+          "def": {
+            "innerType": {
+              "_zod": {
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+              },
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+            "type": "nullable",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        "foo": {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      },
+      "type": "object",
+    },
+  },
+  "def": {
+    "shape": {
+      "bar": {
+        "_zod": {
+          "def": {
+            "innerType": {
+              "_zod": {
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+              },
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+            "type": "nullable",
+          },
+        },
+        "def": {
+          "innerType": {
+            "_zod": {
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+            },
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+          "type": "nullable",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "foo": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    },
+    "type": "object",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.object() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "shape": {
+        "bar": {
+          "_zod": {
+            "def": {
+              "innerType": {
+                "_zod": {
+                  "def": {
+                    "checks": [],
+                    "type": "number",
+                  },
+                },
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+                "~standard": {
+                  "validate": [Function],
+                  "vendor": "zod",
+                  "version": 1,
+                },
+              },
+              "type": "nullable",
+            },
+          },
+          "def": {
+            "innerType": {
+              "_zod": {
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+              },
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+            "type": "nullable",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        "foo": {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      },
+      "type": "object",
+    },
+  },
+  "def": {
+    "shape": {
+      "bar": {
+        "_zod": {
+          "def": {
+            "innerType": {
+              "_zod": {
+                "def": {
+                  "checks": [],
+                  "type": "number",
+                },
+              },
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+              "~standard": {
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+            "type": "nullable",
+          },
+        },
+        "def": {
+          "innerType": {
+            "_zod": {
+              "def": {
+                "checks": [],
+                "type": "number",
+              },
+            },
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+          "type": "nullable",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "foo": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    },
+    "type": "object",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.record() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "keyType": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "record",
+      "valueType": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    },
+  },
+  "def": {
+    "keyType": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "record",
+    "valueType": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.record() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "keyType": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "record",
+      "valueType": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    },
+  },
+  "def": {
+    "keyType": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "record",
+    "valueType": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.string() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "type": "string",
+    },
+  },
+  "def": {
+    "type": "string",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.string() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "type": "string",
+    },
+  },
+  "def": {
+    "type": "string",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.tuple() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "items": [
+        {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        {
+          "_zod": {
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+          },
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      ],
+      "rest": {
+        "_zod": {
+          "def": {
+            "type": "boolean",
+          },
+        },
+        "def": {
+          "type": "boolean",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "tuple",
+    },
+  },
+  "def": {
+    "items": [
+      {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    ],
+    "rest": {
+      "_zod": {
+        "def": {
+          "type": "boolean",
+        },
+      },
+      "def": {
+        "type": "boolean",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "tuple",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.tuple() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "items": [
+        {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        {
+          "_zod": {
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+          },
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      ],
+      "rest": {
+        "_zod": {
+          "def": {
+            "type": "boolean",
+          },
+        },
+        "def": {
+          "type": "boolean",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "tuple",
+    },
+  },
+  "def": {
+    "items": [
+      {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    ],
+    "rest": {
+      "_zod": {
+        "def": {
+          "type": "boolean",
+        },
+      },
+      "def": {
+        "type": "boolean",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "tuple",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.union() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "options": [
+        {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        {
+          "_zod": {
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+          },
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      ],
+      "type": "union",
+    },
+  },
+  "def": {
+    "options": [
+      {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    ],
+    "type": "union",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.union() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "options": [
+        {
+          "_zod": {
+            "def": {
+              "type": "string",
+            },
+          },
+          "def": {
+            "type": "string",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        {
+          "_zod": {
+            "def": {
+              "checks": [],
+              "type": "number",
+            },
+          },
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+          "~standard": {
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+      ],
+      "type": "union",
+    },
+  },
+  "def": {
+    "options": [
+      {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+    ],
+    "type": "union",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
