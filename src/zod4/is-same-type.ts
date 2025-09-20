@@ -126,7 +126,7 @@ export const isSameTypePresetRules = [
       if (isSimpleType(a) || isSimpleType(b)) {
         const aType = a._zod.def.type;
         const bType = b._zod.def.type;
-        return aType !== bType;
+        return aType === bType;
       }
       return next();
     },
