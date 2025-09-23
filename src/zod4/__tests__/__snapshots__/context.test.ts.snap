@@ -59,6 +59,14 @@ exports[`zod4 isSameType context > should context result works 1`] = `
     true,
   ],
   [
+    "compare legacy ZodFunction",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
     "compare tuple",
     [
       "tuple",
@@ -140,6 +148,14 @@ exports[`zod4 isSameType context > should context result works 1`] = `
   ],
   [
     "unstable warn",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare legacy ZodFunction",
     [
       "tuple",
       "tuple",

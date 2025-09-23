@@ -13,3 +13,15 @@ describe("is-same-type (zod4 vs legacy) diff", () => {
     );
   });
 });
+
+describe("is-compatible-type (zod4 vs legacy) diff", () => {
+  it("should match baseline", async () => {
+    const exec = util.promisify(child_process.exec);
+    const result = await exec(
+      "diff src/zod4/__tests__/is-compatible-type.test.ts src/legacy/__tests__/is-compatible-type.test.ts || true",
+    );
+    expect(result.stdout).toMatchFileSnapshot(
+      "__snapshots__/is-compatible-type.diff",
+    );
+  });
+});
