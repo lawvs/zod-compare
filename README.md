@@ -22,11 +22,6 @@ pnpm add zod zod-compare
 
 ## Usage
 
-Use the top-level helpers to compare schemas:
-
-- `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
-- `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
-
 ```ts
 import { z } from "zod";
 import { isSameType, isCompatibleType } from "zod-compare";
@@ -46,37 +41,22 @@ isCompatibleType(
 // true
 ```
 
-### Default behavior (auto-detect Zod v3/v4)
+Use the top-level helpers to compare schemas:
 
-The top-level APIs (`isSameType`) accept inputs from either Zod v3 or Zod v4. They automatically detect the Zod major version of both inputs and route to the matching comparison engine when both are from the same major.
+- `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
+- `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
 
-You can explicitly check versions using the exported helpers:
+### Versions and entry points
 
-```ts
-import { haveSameZodMajor, isZod3Schema, isZod4Schema } from "zod-compare";
+The top-level APIs accept inputs from Zod v3 or v4 and automatically route to the right comparison engine when both inputs are from the same major. If inputs are mixed (v3 vs v4), both functions throw.
 
-// haveSameZodMajor(a, b) => boolean
-// isZod3Schema(a) / isZod4Schema(a) => boolean
-```
-
-### Zod v4 entry point
-
-Import from the v4-specific entry to ensure Zod v4 types and inference:
+If you’re on Zod v4, import from the v4 entry for the best types/inference:
 
 ```ts
+import { isSameType } from "zod-compare/zod4";
 import { z } from "zod/v4";
-import {
-  isSameType,
-  isCompatibleType,
-  createCompareFn,
-  defineCompareRule,
-} from "zod-compare/zod4";
 
 isSameType(z.string(), z.string()); // true
-isCompatibleType(
-  z.object({ name: z.string() }),
-  z.object({ name: z.string(), other: z.number() }),
-); // true
 ```
 
 If you use Zod v3 exclusively, import from `zod-compare/zod3`.
