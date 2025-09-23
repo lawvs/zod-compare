@@ -362,6 +362,170 @@ $ZodFunction {
 }
 `;
 
+exports[`snapshot > should z.intersection() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "left": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "right": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "intersection",
+    },
+  },
+  "def": {
+    "left": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "right": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "intersection",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.intersection() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "left": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "right": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "intersection",
+    },
+  },
+  "def": {
+    "left": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "right": {
+      "_zod": {
+        "def": {
+          "checks": [],
+          "type": "number",
+        },
+      },
+      "def": {
+        "checks": [],
+        "type": "number",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "intersection",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
 exports[`snapshot > should z.literal() match snapshot 1`] = `
 {
   "_zod": {

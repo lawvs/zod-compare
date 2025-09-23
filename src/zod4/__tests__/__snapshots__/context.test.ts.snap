@@ -1,0 +1,150 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`zod4 isSameType context > should context result works 1`] = `
+[
+  [
+    "compare simple type",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "unwrap innerType",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "compare type",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "compare reference",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "undefined check",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "strict ZodTypes check",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "unstable warn",
+    [
+      "string",
+      "string",
+    ],
+    true,
+  ],
+  [
+    "compare tuple",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare record",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare object",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare array",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare simple type",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "unwrap innerType",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare type",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "compare reference",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "undefined check",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "strict ZodTypes check",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+  [
+    "unstable warn",
+    [
+      "tuple",
+      "tuple",
+    ],
+    false,
+  ],
+]
+`;
