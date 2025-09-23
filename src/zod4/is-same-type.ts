@@ -1,9 +1,9 @@
 import type { $ZodTypes, $ZodUnion } from "zod/v4/core";
+import { isLegacyZodFunction } from "./compat.ts";
 import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  isLegacyZodFunction,
   isSimpleType,
   isZodType,
   isZodTypes,

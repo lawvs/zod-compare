@@ -1,17 +1,12 @@
-import type { $ZodFunction, $ZodType, $ZodTypes } from "zod/v4/core";
+import type { $ZodType, $ZodTypes } from "zod/v4/core";
 
+import type { LegacyZodFunction } from "./compat.ts";
 import { type CompareContext, type CompareRule } from "./types.ts";
 
 export const createCompareFn = (rules: CompareRule[]) => {
   const isSameTypeFn = (
-    left: Readonly<
-      | $ZodType
-      // Before zod v4.1, the $ZodFunction was not a Zod schema.
-      // Learn more: https://github.com/colinhacks/zod/pull/5121/
-      // Remove this union when we bump the zod version to v4.1+
-      | $ZodFunction
-    >,
-    right: Readonly<$ZodType | $ZodFunction>,
+    left: Readonly<$ZodType | LegacyZodFunction>,
+    right: Readonly<$ZodType | LegacyZodFunction>,
     context: CompareContext = {},
   ): boolean => {
     let prevIndex = -1;
