@@ -28,6 +28,11 @@ jobs:
       - name: Install node modules
         run: pnpm install
 
+      # Note: Trusted publishing requires npm CLI version 11.5.1 or later.
+      - name: Update npm
+        run: |
+          npm install -g npm@latest
+
       # We use trusted publishing
       # Learn more: https://docs.npmjs.com/trusted-publishers
       - name: Create Release Pull Request or Publish to npm
