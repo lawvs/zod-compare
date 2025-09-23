@@ -132,6 +132,9 @@ export const flatUnwrapUnion = <
   }) as unknown as Options;
 };
 
+/**
+ * @deprecated Not used
+ */
 export const compareSchemas = (
   a: $ZodTypes,
   b: $ZodTypes,
