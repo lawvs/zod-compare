@@ -1,7 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { z } from "zod";
+import { z } from "zod/v4";
 import { isSameType } from "../is-same-type.ts";
-import type { CompareContext } from "../types.ts";
 
 describe("isSameType", () => {
   test("should ref same type", () => {
@@ -24,16 +23,6 @@ describe("isSameType", () => {
     expect(isSameType(z.any(), z.any())).toBe(true);
     expect(isSameType(z.unknown(), z.unknown())).toBe(true);
     expect(isSameType(z.any(), z.unknown())).toBe(false);
-  });
-
-  test("should return false when compare branded type", () => {
-    expect(isSameType(z.string().brand("test"), z.string())).toBe(false);
-    expect(isSameType(z.string().brand("test"), z.string().brand("test"))).toBe(
-      false,
-    );
-    // expect(() =>
-    //   isSameType(z.string().brand("test"), z.string().brand("test"))
-    // ).toThrowError();
   });
 
   test("should compare simple object", () => {
@@ -188,67 +177,6 @@ describe("isSameType", () => {
   });
 });
 
-describe("isSameType context", () => {
-  test("should context work with different primitive type", () => {
-    const context: CompareContext = {
-      stacks: [],
-    };
-    const result = isSameType(z.number(), z.string(), context);
-
-    expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(3);
-    expect(context?.stacks?.at(0)?.name).toEqual("compare constructor");
-  });
-
-  test("should context work with different type", () => {
-    const context: CompareContext = {
-      stacks: [],
-    };
-    const result = isSameType(
-      z.object({ name: z.number() }),
-      z.object({ name: z.string() }),
-      context,
-    );
-
-    expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(11);
-    expect(context?.stacks?.at(0)?.name).toEqual("compare constructor");
-  });
-
-  test("should context result works", () => {
-    const context: CompareContext = {
-      stacks: [],
-    };
-    const result = isSameType(
-      z.tuple([z.string()]),
-      z.tuple([z.string()]).rest(z.unknown()),
-      context,
-    );
-
-    expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(17);
-    expect(context?.stacks?.map((i) => [i.name, i.result])).toEqual([
-      ["is same primitive", true],
-      ["unwrap ZodType", true],
-      ["compare ZodBranded", true],
-      ["compare typeName", true],
-      ["compare constructor", true],
-      ["compare reference", true],
-      ["undefined check", true],
-      ["compare ZodTuple", false],
-      ["compare ZodArray", false],
-      ["compare ZodObject", false],
-      ["is same primitive", false],
-      ["unwrap ZodType", false],
-      ["compare ZodBranded", false],
-      ["compare typeName", false],
-      ["compare constructor", false],
-      ["compare reference", false],
-      ["undefined check", false],
-    ]);
-  });
-});
-
 // See https://zod.dev/?id=coercion-for-primitives
 describe("coerce", () => {
   test("can compare coerce type", () => {
@@ -261,29 +189,5 @@ describe("coerce", () => {
   test("can compare coerce type with normal type", () => {
     expect(isSameType(z.coerce.string(), z.string())).toBe(true);
     expect(isSameType(z.coerce.number(), z.number())).toBe(true);
-  });
-
-  test("can compare coerce type with function", () => {
-    expect(
-      isSameType(
-        z
-          .function()
-          .args(z.coerce.number(), z.coerce.string())
-          .returns(z.boolean()),
-        z
-          .function()
-          .args(z.coerce.number(), z.coerce.string())
-          .returns(z.boolean()),
-      ),
-    ).toBe(true);
-    expect(
-      isSameType(
-        z
-          .function()
-          .args(z.coerce.number(), z.coerce.string())
-          .returns(z.boolean()),
-        z.function().args(z.number(), z.string()).returns(z.boolean()),
-      ),
-    ).toBe(true);
   });
 });

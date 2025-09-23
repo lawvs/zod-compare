@@ -6,8 +6,11 @@ export default defineConfig({
   build: {
     sourcemap: true,
     lib: {
-      entry: "src/index.ts",
-      fileName: "index",
+      entry: {
+        index: "src/index.ts",
+        zod3: "src/zod3/index.ts",
+        zod4: "src/zod4/index.ts",
+      },
       formats: ["es", "cjs"],
     },
     rollupOptions: {

@@ -5,7 +5,7 @@
 
 Compare two [Zod](https://zod.dev/) schemas recursively.
 
-`zod-compare` provides functions to compare Zod schemas, allowing you to determine whether two schemas are the same or compatible.
+`zod-compare` provides functions to compare Zod schemas, allowing you to determine whether two schemas are the same or compatible. Supports both Zod v3 and Zod v4.
 
 ## Installation
 
@@ -21,6 +21,11 @@ pnpm add zod zod-compare
 ```
 
 ## Usage
+
+Use the top-level helpers to compare schemas:
+
+- `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
+- `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
 
 ```ts
 import { z } from "zod";
@@ -40,6 +45,41 @@ isCompatibleType(
 );
 // true
 ```
+
+### Default behavior (auto-detect Zod v3/v4)
+
+The top-level APIs (`isSameType`) accept inputs from either Zod v3 or Zod v4. They automatically detect the Zod major version of both inputs and route to the matching comparison engine when both are from the same major.
+
+You can explicitly check versions using the exported helpers:
+
+```ts
+import { haveSameZodMajor, isZod3Schema, isZod4Schema } from "zod-compare";
+
+// haveSameZodMajor(a, b) => boolean
+// isZod3Schema(a) / isZod4Schema(a) => boolean
+```
+
+### Zod v4 entry point
+
+Import from the v4-specific entry to ensure Zod v4 types and inference:
+
+```ts
+import { z } from "zod/v4";
+import {
+  isSameType,
+  isCompatibleType,
+  createCompareFn,
+  defineCompareRule,
+} from "zod-compare/zod4";
+
+isSameType(z.string(), z.string()); // true
+isCompatibleType(
+  z.object({ name: z.string() }),
+  z.object({ name: z.string(), other: z.number() }),
+); // true
+```
+
+If you use Zod v3 exclusively, import from `zod-compare/zod3`.
 
 ## Advanced Usage
 
@@ -104,7 +144,7 @@ Compares two Zod schemas and returns `true` if they are the same.
 ```ts
 import { isSameType } from "zod-compare";
 
-type isSameType: (a: ZodType, b: ZodType, context?: CompareContext) => boolean;
+type isSameType: (a: $ZodType, b: $ZodType, context?: CompareContext) => boolean;
 ```
 
 ### `createCompareFn`
@@ -137,7 +177,7 @@ Compares two Zod schemas and returns `true` if they are compatible.
 import { isCompatibleType } from "zod-compare";
 // The `higherType` should be a looser type
 // The `lowerType` should be a stricter type
-type isCompatibleType: (higherType: ZodType, lowerType: ZodType) => boolean;
+type isCompatibleType: (higherType: $ZodType, lowerType: $ZodType) => boolean;
 ```
 
 ### Preset Rules
@@ -160,15 +200,16 @@ const yourIsSameType = createCompareFn([customRule, ...isSameTypePresetRules]);
 type CompareContext = {
   stacks?: {
     name: string;
-    target: [a: ZodType, b: ZodType];
+    target: [a: $ZodTypes, b: $ZodTypes];
+    result: boolean;
   }[];
 } & Record<string, unknown>;
 
 type CompareFn = (
-  a: ZodType,
-  b: ZodType,
+  a: $ZodTypes,
+  b: $ZodTypes,
   next: () => boolean,
-  recheck: (a: ZodType, b: ZodType) => boolean,
+  recheck: (a: $ZodType, b: $ZodType) => boolean,
   context: CompareContext,
 ) => boolean;
 

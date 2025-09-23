@@ -1,0 +1,142 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`zod4 isSameType context > should context result works 1`] = `
+[
+  [
+    "is same primitive",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "unwrap ZodType",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "compare ZodBranded",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "compare typeName",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "compare constructor",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "compare reference",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "undefined check",
+    [
+      "ZodString",
+      "ZodString",
+    ],
+    true,
+  ],
+  [
+    "compare ZodTuple",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare ZodArray",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare ZodObject",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "is same primitive",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "unwrap ZodType",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare ZodBranded",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare typeName",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare constructor",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "compare reference",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+  [
+    "undefined check",
+    [
+      "ZodTuple",
+      "ZodTuple",
+    ],
+    false,
+  ],
+]
+`;

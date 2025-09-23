@@ -1,4 +1,4 @@
-import { z, type ZodType } from "zod";
+import { z, type ZodType } from "zod/v3";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";

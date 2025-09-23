@@ -26,5 +26,5 @@
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true
   },
-  "exclude": ["playground", "**/dist/**", "**/node_modules/**"]
+  "exclude": ["**/dist/**", "**/node_modules/**"]
 }
