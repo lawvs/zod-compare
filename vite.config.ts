@@ -1,5 +1,9 @@
+import { dirname, resolve } from "node:path";
+import { fileURLToPath } from "node:url";
 import { defineConfig } from "vite";
 import dts from "vite-plugin-dts";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -7,9 +11,9 @@ export default defineConfig({
     sourcemap: true,
     lib: {
       entry: {
-        index: "src/index.ts",
-        zod3: "src/zod3/index.ts",
-        zod4: "src/zod4/index.ts",
+        index: resolve(__dirname, "src/index.ts"),
+        zod3: resolve(__dirname, "src/zod3/index.ts"),
+        zod4: resolve(__dirname, "src/zod4/index.ts"),
       },
       formats: ["es", "cjs"],
     },
