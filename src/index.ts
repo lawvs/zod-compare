@@ -75,5 +75,5 @@ export const isCompatibleType = (
   if (isZod3Schema(a) && isZod3Schema(b)) {
     return isCompatibleZod3Type(a, b);
   }
-  return false;
+  throw new Error("Failed to compare types: different Zod versions");
 };
