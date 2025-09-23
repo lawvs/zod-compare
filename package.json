@@ -42,10 +42,10 @@
     "vite": "^7.0.0",
     "vite-plugin-dts": "^4.3.0",
     "vitest": "^3.2.4",
-    "zod": "^3.25.67"
+    "zod": "^3.25.76"
   },
   "peerDependencies": {
-    "zod": "^3.25.0"
+    "zod": "^3.25.0 || ^4.0.0"
   },
   "packageManager": "pnpm@9.0.6",
   "engines": {
