@@ -1,5 +1,32 @@
 # zod-compare
 
+## 2.0.0
+
+### Major Changes
+
+- [#84](https://github.com/lawvs/zod-compare/pull/84) [`3e0bbf0`](https://github.com/lawvs/zod-compare/commit/3e0bbf006d0c504c69988c89997d607cd5d4f80a) Thanks [@lawvs](https://github.com/lawvs)! - Add first-class compatibility with Zod v4.
+  - New entry point: `zod-compare/zod4` exposes the same comparison APIs for Zod v4
+  - Peer dependency widened to `zod: ^3.25.0 || ^4.0.0`
+  - No breaking changes for Zod v3 users
+
+  Notes:
+  - Mixed-major comparisons are not supported at runtime. When Zod majors differ, both `isSameType` and `isCompatibleType` throw an error.
+
+  Usage:
+
+  ```ts
+  // Zod v4
+  import { z } from "zod/v4";
+  import { isSameType, isCompatibleType } from "zod-compare/zod4";
+
+  // Zod v3
+  import { z as z3 } from "zod";
+  import {
+    isSameType as isSameV3,
+    isCompatibleType as isCompatV3,
+  } from "zod-compare/zod3";
+  ```
+
 ## 1.1.0
 
 ### Minor Changes
