@@ -28,6 +28,8 @@ jobs:
       - name: Install node modules
         run: pnpm install
 
+      # We use trusted publishing
+      # Learn more: https://docs.npmjs.com/trusted-publishers
       - name: Create Release Pull Request or Publish to npm
         id: changesets
         uses: changesets/action@v1
@@ -35,5 +37,3 @@ jobs:
           publish: pnpm run release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          NPM_CONFIG_PROVENANCE: true

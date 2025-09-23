@@ -25,7 +25,7 @@
     "dist"
   ],
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "vite build",
     "format": "prettier --check .",
     "format:fix": "prettier --write .",
     "typeCheck": "tsc --noEmit",
@@ -54,13 +54,26 @@
   "prettier": {},
   "publishConfig": {
     "access": "public",
-    "main": "dist/index.js",
+    "main": "./dist/index.js",
     "module": "./dist/index.js",
     "types": "./dist/index.d.ts",
     "exports": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js",
-      "require": "./dist/index.cjs"
+      "./package.json": "./package.json",
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "require": "./dist/index.cjs"
+      },
+      "./zod3": {
+        "types": "./dist/zod3/index.d.ts",
+        "import": "./dist/zod3.js",
+        "require": "./dist/zod3.cjs"
+      },
+      "./zod4": {
+        "types": "./dist/zod4/index.d.ts",
+        "import": "./dist/zod4.js",
+        "require": "./dist/zod4.cjs"
+      }
     }
   }
 }
