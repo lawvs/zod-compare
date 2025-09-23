@@ -3,12 +3,36 @@ import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
+  isLegacyZodFunction,
   isSimpleType,
   isZodType,
   isZodTypes,
 } from "./utils.ts";
 
 export const isSameTypePresetRules = [
+  // Compatible pre-v4.1 ZodFunction
+  {
+    name: "compare legacy ZodFunction",
+    compare: (a, b, next, recheck) => {
+      if (isLegacyZodFunction(a) || isLegacyZodFunction(b)) {
+        if (!isLegacyZodFunction(a) || !isLegacyZodFunction(b)) {
+          return false;
+        }
+        return recheck(
+          {
+            ...a,
+            // @ts-expect-error -- make it look like a ZodType
+            _zod: { def: a.def },
+          },
+          {
+            ...b,
+            _zod: { def: b.def },
+          },
+        );
+      }
+      return next();
+    },
+  },
   {
     name: "unstable warn",
     compare: (a, b, next) => {
@@ -267,7 +291,7 @@ export const isSameTypePresetRules = [
     compare: (a, b, next, recheck) => {
       const aType = a._zod.def.type;
       const bType = b._zod.def.type;
-      // Upgrade zod to v4 to resolve it
+      // Upgrade zod to v4.1 to resolve it
       // @ts-expect-error -- see https://github.com/colinhacks/zod/issues/4143
       if (aType === "function" && bType === "function") {
         // In Zod4, function def has `input` (tuple-like) and `output` (ZodType)
