@@ -13,6 +13,13 @@ describe("zod4 specific test", () => {
     );
   });
 
+  // Zod4 deprecates strict and passthrough object types. Instead use the top-level z.strictObject() and z.looseObject() functions.
+  // https://zod.dev/v4/changelog?id=deprecates-strict-and-passthrough
+  test("zod4 can not distinguish between strictObject and looseObject types", () => {
+    expect(isSameType(z.strictObject({}), z.object({}))).toBe(true);
+    expect(isSameType(z.looseObject({}), z.strictObject({}))).toBe(true);
+  });
+
   // In Zod4, The result of z.function() is no longer a Zod schema.
   // Instead, it acts as a standalone "function factory" for defining Zod-validated functions.
   // See https://github.com/colinhacks/zod/issues/4143

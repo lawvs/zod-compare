@@ -362,6 +362,164 @@ $ZodFunction {
 }
 `;
 
+exports[`snapshot > should z.function() with void input match snapshot 1`] = `
+$ZodFunction {
+  "_def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "element": {
+            "_zod": {
+              "def": {
+                "type": "unknown",
+              },
+            },
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+          "type": "array",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "type": "void",
+        },
+      },
+      "def": {
+        "type": "void",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+  "def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "element": {
+            "_zod": {
+              "def": {
+                "type": "unknown",
+              },
+            },
+            "~standard": {
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+          "type": "array",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "type": "void",
+        },
+      },
+      "def": {
+        "type": "void",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+}
+`;
+
+exports[`snapshot > should z.function() with void input match snapshot 2`] = `
+$ZodFunction {
+  "_def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "type": "void",
+        },
+      },
+      "def": {
+        "type": "void",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+  "def": {
+    "input": {
+      "_zod": {
+        "def": {
+          "items": [],
+          "rest": null,
+          "type": "tuple",
+        },
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "output": {
+      "_zod": {
+        "def": {
+          "type": "void",
+        },
+      },
+      "def": {
+        "type": "void",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "function",
+  },
+}
+`;
+
 exports[`snapshot > should z.intersection() match snapshot 1`] = `
 {
   "_zod": {
@@ -865,6 +1023,202 @@ exports[`snapshot > should z.object() match snapshot 2`] = `
       },
     },
     "type": "object",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.object() variant match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "catchall": {
+        "_zod": {
+          "def": {
+            "type": "unknown",
+          },
+        },
+        "def": {
+          "type": "unknown",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "shape": {},
+      "type": "object",
+    },
+  },
+  "def": {
+    "catchall": {
+      "_zod": {
+        "def": {
+          "type": "unknown",
+        },
+      },
+      "def": {
+        "type": "unknown",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "shape": {},
+    "type": "object",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.object() variant match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "catchall": {
+        "_zod": {
+          "def": {
+            "type": "never",
+          },
+        },
+        "def": {
+          "type": "never",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "shape": {},
+      "type": "object",
+    },
+  },
+  "def": {
+    "catchall": {
+      "_zod": {
+        "def": {
+          "type": "never",
+        },
+      },
+      "def": {
+        "type": "never",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "shape": {},
+    "type": "object",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.promise() match snapshot 1`] = `
+{
+  "_zod": {
+    "def": {
+      "innerType": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "promise",
+    },
+  },
+  "def": {
+    "innerType": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "promise",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
+  },
+}
+`;
+
+exports[`snapshot > should z.promise() match snapshot 2`] = `
+{
+  "_zod": {
+    "def": {
+      "innerType": {
+        "_zod": {
+          "def": {
+            "type": "string",
+          },
+        },
+        "def": {
+          "type": "string",
+        },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
+      },
+      "type": "promise",
+    },
+  },
+  "def": {
+    "innerType": {
+      "_zod": {
+        "def": {
+          "type": "string",
+        },
+      },
+      "def": {
+        "type": "string",
+      },
+      "~standard": {
+        "validate": [Function],
+        "vendor": "zod",
+        "version": 1,
+      },
+    },
+    "type": "promise",
   },
   "~standard": {
     "validate": [Function],

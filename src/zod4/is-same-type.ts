@@ -75,7 +75,6 @@ export const isSameTypePresetRules = [
       const isZodTypesA = isZodTypes(a);
       const isZodTypesB = isZodTypes(b);
       if (!isZodTypesA || !isZodTypesB) {
-        // If neither are Zod types, we can compare them directly
         console.warn("Failed to compare type! " + a + " " + b);
         return false;
       }

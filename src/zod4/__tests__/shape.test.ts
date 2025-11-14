@@ -101,4 +101,20 @@ describe("snapshot", () => {
       zm.function({ input: [z.string()], output: z.number() }),
     ).toMatchSnapshot();
   });
+
+  test("should z.function() with void input match snapshot", () => {
+    // Ignore `input` is invalid, parameters must be an array or a ZodTuple
+    expect(z.function({ output: z.void() })).toMatchSnapshot();
+    expect(z.function({ input: [], output: z.void() })).toMatchSnapshot();
+  });
+
+  test("should z.object() variant match snapshot", () => {
+    expect(z.looseObject({})).toMatchSnapshot();
+    expect(z.strictObject({})).toMatchSnapshot();
+  });
+
+  test("should z.promise() match snapshot", () => {
+    expect(z.promise(z.string())).toMatchSnapshot();
+    expect(zm.promise(zm.string())).toMatchSnapshot();
+  });
 });
