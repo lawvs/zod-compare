@@ -173,7 +173,10 @@ export const zodToString = (
         ([k, v]) =>
           `${indentStr}${k}: ${zodToString(v as $ZodType, options, nextIndent)}`,
       );
-      return `z.object({${shapeStrs.join(format ? "," : ", ")}${endIndentStr}})`;
+      if (format) {
+        return `z.object({${shapeStrs.join(",")}${endIndentStr}})`;
+      }
+      return `z.object({ ${shapeStrs.join(", ")} })`;
     case "tuple":
       const items = def.items as $ZodType[];
       const itemStrs = items.map((i) => zodToString(i, options, nextIndent));
