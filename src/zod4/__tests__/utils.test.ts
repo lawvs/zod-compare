@@ -39,4 +39,18 @@ describe("zodToString", () => {
   test("optional", () => {
     expect(zodToString(z.string().optional())).toBe("z.string().optional()");
   });
+
+  test("formatted object", () => {
+    const schema = z.object({
+      user: z.object({
+        id: z.number(),
+      }),
+    });
+    const expected = `z.object({
+  user: z.object({
+    id: z.number()
+  })
+})`;
+    expect(zodToString(schema, { format: true })).toBe(expected);
+  });
 });
