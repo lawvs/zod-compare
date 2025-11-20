@@ -131,3 +131,53 @@ export const flatUnwrapUnion = <
     return x;
   }) as unknown as Options;
 };
+
+export const zodToString = (schema: $ZodType): string => {
+  if (!isZodTypes(schema)) {
+    return "z.unknown()";
+  }
+  const def = schema._zod.def;
+  const type = def.type;
+
+  switch (type) {
+    case "string":
+    case "number":
+    case "boolean":
+    case "bigint":
+    case "symbol":
+    case "undefined":
+    case "null":
+    case "any":
+    case "unknown":
+    case "never":
+    case "void":
+    case "date":
+    case "nan":
+      return `z.${type}()`;
+    case "literal":
+      const values = def.values as unknown[];
+      return `z.literal(${JSON.stringify(values[0])})`;
+    case "array":
+      return `z.array(${zodToString(def.element)})`;
+    case "object":
+      const shape = def.shape;
+      const shapeStrs = Object.entries(shape).map(
+        ([k, v]) => `${k}: ${zodToString(v as $ZodType)}`,
+      );
+      return `z.object({ ${shapeStrs.join(", ")} })`;
+    case "tuple":
+      const items = def.items as $ZodType[];
+      return `z.tuple([${items.map(zodToString).join(", ")}])`;
+    case "union":
+      const options = def.options as $ZodType[];
+      return `z.union([${options.map(zodToString).join(", ")}])`;
+    case "intersection":
+      return `z.intersection(${zodToString(def.left)}, ${zodToString(def.right)})`;
+    case "optional":
+      return `${zodToString(def.innerType)}.optional()`;
+    case "nullable":
+      return `${zodToString(def.innerType)}.nullable()`;
+    default:
+      return `z.${type}(...)`;
+  }
+};
