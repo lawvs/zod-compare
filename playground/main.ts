@@ -1,6 +1,7 @@
 import { z } from "zod/v4";
 import { isCompatibleType, isSameType } from "../src/zod4/index.ts";
 import type { CompareContext } from "../src/zod4/types.ts";
+import { zodToString } from "../src/zod4/utils.ts";
 
 const schemaAInput = document.getElementById("schemaA") as HTMLTextAreaElement;
 const schemaBInput = document.getElementById("schemaB") as HTMLTextAreaElement;
@@ -67,18 +68,13 @@ function compare() {
         </thead>
         <tbody>
           ${context.stacks
-            .filter((s, index, array) => {
-              if (s.result) return true;
-              const firstFalseIndex = array.findIndex((item) => !item.result);
-              return index === firstFalseIndex;
-            })
             .map(
               (s) => `
             <tr class="${s.result ? "pass" : "fail"}">
               <td>${s.name}</td>
               <td>${s.result}</td>
-              <td>${s.target[0]?.constructor?.name || s.target[0]?._zod?.def?.type || "Unknown"}</td>
-              <td>${s.target[1]?.constructor?.name || s.target[1]?._zod?.def?.type || "Unknown"}</td>
+              <td>${zodToString(s.target[0])}</td>
+              <td>${zodToString(s.target[1])}</td>
             </tr>
           `,
             )
