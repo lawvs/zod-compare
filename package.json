@@ -30,6 +30,8 @@
     "format:fix": "prettier --write .",
     "typeCheck": "tsc --noEmit",
     "test": "vitest",
+    "playground": "vite playground",
+    "build:playground": "vite build -c vite.config.playground.ts",
     "changeset": "changeset",
     "release": "pnpm run build && changeset publish"
   },

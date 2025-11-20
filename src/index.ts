@@ -4,11 +4,13 @@ import { haveSameZodMajor, isZod3Schema, isZod4Schema } from "./utils.ts";
 import {
   isCompatibleType as isCompatibleZod3Type,
   isSameType as isSameZod3Type,
+  type CompareContext as CompareContext3,
 } from "./zod3/index.ts";
 import type { LegacyZodFunction } from "./zod4/compat.ts";
 import {
   isCompatibleType as isCompatibleZod4Type,
   isSameType as isSameZod4Type,
+  type CompareContext as CompareContext4,
 } from "./zod4/index.ts";
 
 // Export versions checking utilities
@@ -36,12 +38,13 @@ export { haveSameZodMajor, isZod3Schema, isZod4Schema };
 export const isSameType = (
   a: z3.ZodTypeAny | z4.$ZodType | LegacyZodFunction,
   b: z3.ZodTypeAny | z4.$ZodType | LegacyZodFunction,
+  context?: CompareContext3 & CompareContext4,
 ): boolean => {
   if (isZod4Schema(a) && isZod4Schema(b)) {
-    return isSameZod4Type(a, b);
+    return isSameZod4Type(a, b, context as CompareContext4);
   }
   if (isZod3Schema(a) && isZod3Schema(b)) {
-    return isSameZod3Type(a, b);
+    return isSameZod3Type(a, b, context as CompareContext3);
   }
   throw new Error("Failed to compare types: different Zod versions");
 };
