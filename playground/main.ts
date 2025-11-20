@@ -28,7 +28,10 @@ function evaluateSchema(code: string) {
 }
 
 function compare() {
-  if (errorDiv) errorDiv.textContent = "";
+  if (errorDiv) {
+    errorDiv.textContent = "";
+    errorDiv.style.display = "none";
+  }
   if (debugDiv) debugDiv.textContent = "";
   if (isSameTypeResult) {
     isSameTypeResult.textContent = "-";
@@ -73,8 +76,8 @@ function compare() {
             <tr class="${s.result ? "pass" : "fail"}">
               <td>${s.name}</td>
               <td>${s.result}</td>
-              <td>${zodToString(s.target[0])}</td>
-              <td>${zodToString(s.target[1])}</td>
+              <td><pre>${zodToString(s.target[0], { format: true })}</pre></td>
+              <td><pre>${zodToString(s.target[1], { format: true })}</pre></td>
             </tr>
           `,
             )
@@ -91,7 +94,10 @@ function compare() {
       isCompatibleTypeResult.className = compatible ? "true" : "false";
     }
   } catch (err) {
-    errorDiv.textContent = (err as Error).message;
+    if (errorDiv) {
+      errorDiv.textContent = (err as Error).message;
+      errorDiv.style.display = "block";
+    }
   }
 }
 
