@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Zod Compare Playground</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <h1>Zod Compare Playground</h1>
+      <div class="container">
+        <div class="editor-container">
+          <h2>Schema A</h2>
+          <textarea id="schemaA" spellcheck="false">
+z.object({
+  name: z.string(),
+  age: z.number()
+})</textarea
+          >
+        </div>
+        <div class="editor-container">
+          <h2>Schema B</h2>
+          <textarea id="schemaB" spellcheck="false">
+z.object({
+  name: z.string(),
+  age: z.string()
+})</textarea
+          >
+        </div>
+      </div>
+      <div class="controls">
+        <button id="compareBtn">Compare</button>
+      </div>
+      <div class="results">
+        <div class="result-item">
+          <strong>isSameType:</strong> <span id="isSameTypeResult">-</span>
+        </div>
+        <div class="result-item" style="display: none">
+          <strong>isCompatibleType:</strong>
+          <span id="isCompatibleTypeResult">-</span>
+        </div>
+        <div id="debug" class="debug-info"></div>
+        <div id="error" class="error"></div>
+      </div>
+    </div>
+    <script type="module" src="./main.ts"></script>
+  </body>
+</html>

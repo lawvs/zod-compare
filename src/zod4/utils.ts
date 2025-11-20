@@ -132,73 +132,78 @@ export const flatUnwrapUnion = <
   }) as unknown as Options;
 };
 
-/**
- * @deprecated Not used
- */
-export const compareSchemas = (
-  a: $ZodTypes,
-  b: $ZodTypes,
-  compareZod: (a: $ZodTypes, b: $ZodTypes) => boolean,
-): boolean => {
-  const aDef = a._zod.def;
-  const bDef = b._zod.def;
-  for (const key in aDef) {
-    if (!(key in bDef)) return false;
-    const aValue = aDef[key as keyof typeof aDef];
-    const bValue = bDef[key as keyof typeof bDef];
-
-    if (typeof aValue !== typeof bValue) return false;
-    if (aValue === null && bValue !== null) return false;
-    if (
-      typeof aValue === "string" ||
-      typeof aValue === "number" ||
-      typeof aValue === "boolean" ||
-      typeof aValue === "symbol" ||
-      typeof aValue === "bigint" ||
-      typeof aValue === "undefined"
-    ) {
-      if (aValue !== bValue) return false;
-      continue;
-    }
-    if (isZodType(aValue)) {
-      if (!isZodType(bValue)) return false;
-      const isEqual = compareZod(
-        aValue as unknown as $ZodTypes,
-        bValue as unknown as $ZodTypes,
-      );
-      if (!isEqual) return false;
-      continue;
-    }
-    if (Array.isArray(aValue)) {
-      if (!Array.isArray(bValue)) return false;
-      if (aValue.length !== bValue.length) return false;
-      for (let i = 0; i < aValue.length; i++) {
-        const aItem = aValue[i];
-        const bItem = bValue[i];
-        if (isZodType(aItem)) {
-          if (!isZodType(bItem)) return false;
-          if (!compareZod(aItem as $ZodTypes, bItem as $ZodTypes)) return false;
-          continue;
-        }
-        if (aItem !== bItem) {
-          return false;
-        }
-      }
-      continue;
-    }
-    if (typeof aValue === "object") {
-      if (typeof bValue !== "object" || bValue === null) return false;
-      const bShape = bValue;
-      if (Object.keys(aValue).length !== Object.keys(bShape).length)
-        return false;
-      console.warn("Skipping object comparison", key, aValue, bValue);
-      continue;
-    }
-    if (typeof aValue === "function") {
-      // skip function comparison
-      console.warn("Skipping function comparison", key, aValue, bValue);
-      continue;
-    }
+export const zodToString = (
+  schema: $ZodType,
+  options?: { format?: boolean },
+  indent = 0,
+): string => {
+  if (!isZodTypes(schema)) {
+    return "z.unknown()";
   }
-  return true;
+  const def = schema._zod.def;
+  const type = def.type;
+  const format = options?.format ?? false;
+  const nextIndent = indent + 2;
+  const indentStr = format ? "\n" + " ".repeat(nextIndent) : "";
+  const endIndentStr = format ? "\n" + " ".repeat(indent) : "";
+
+  switch (type) {
+    case "string":
+    case "number":
+    case "boolean":
+    case "bigint":
+    case "symbol":
+    case "undefined":
+    case "null":
+    case "any":
+    case "unknown":
+    case "never":
+    case "void":
+    case "date":
+    case "nan":
+      return `z.${type}()`;
+    case "literal":
+      const values = def.values as unknown[];
+      return `z.literal(${JSON.stringify(values[0])})`;
+    case "array":
+      return `z.array(${zodToString(def.element, options, indent)})`;
+    case "object":
+      const shape = def.shape;
+      const shapeStrs = Object.entries(shape).map(
+        ([k, v]) =>
+          `${indentStr}${k}: ${zodToString(v as $ZodType, options, nextIndent)}`,
+      );
+      if (format) {
+        return `z.object({${shapeStrs.join(",")}${endIndentStr}})`;
+      }
+      return `z.object({ ${shapeStrs.join(", ")} })`;
+    case "tuple":
+      const items = def.items as $ZodType[];
+      const itemStrs = items.map((i) => zodToString(i, options, nextIndent));
+      if (format && items.length > 0) {
+        return `z.tuple([${indentStr}${itemStrs.join("," + indentStr)}${endIndentStr}])`;
+      }
+      return `z.tuple([${itemStrs.join(", ")}])`;
+    case "union":
+      const optionsList = def.options as $ZodType[];
+      const optStrs = optionsList.map((o) =>
+        zodToString(o, options, nextIndent),
+      );
+      if (format && optionsList.length > 0) {
+        return `z.union([${indentStr}${optStrs.join("," + indentStr)}${endIndentStr}])`;
+      }
+      return `z.union([${optStrs.join(", ")}])`;
+    case "intersection":
+      return `z.intersection(${zodToString(def.left, options, indent)}, ${zodToString(
+        def.right,
+        options,
+        indent,
+      )})`;
+    case "optional":
+      return `${zodToString(def.innerType, options, indent)}.optional()`;
+    case "nullable":
+      return `${zodToString(def.innerType, options, indent)}.nullable()`;
+    default:
+      return `z.${type}(...)`;
+  }
 };
