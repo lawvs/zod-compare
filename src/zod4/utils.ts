@@ -132,12 +132,20 @@ export const flatUnwrapUnion = <
   }) as unknown as Options;
 };
 
-export const zodToString = (schema: $ZodType): string => {
+export const zodToString = (
+  schema: $ZodType,
+  options?: { format?: boolean },
+  indent = 0,
+): string => {
   if (!isZodTypes(schema)) {
     return "z.unknown()";
   }
   const def = schema._zod.def;
   const type = def.type;
+  const format = options?.format ?? false;
+  const nextIndent = indent + 2;
+  const indentStr = format ? "\n" + " ".repeat(nextIndent) : "";
+  const endIndentStr = format ? "\n" + " ".repeat(indent) : "";
 
   switch (type) {
     case "string":
@@ -158,25 +166,40 @@ export const zodToString = (schema: $ZodType): string => {
       const values = def.values as unknown[];
       return `z.literal(${JSON.stringify(values[0])})`;
     case "array":
-      return `z.array(${zodToString(def.element)})`;
+      return `z.array(${zodToString(def.element, options, indent)})`;
     case "object":
       const shape = def.shape;
       const shapeStrs = Object.entries(shape).map(
-        ([k, v]) => `${k}: ${zodToString(v as $ZodType)}`,
+        ([k, v]) =>
+          `${indentStr}${k}: ${zodToString(v as $ZodType, options, nextIndent)}`,
       );
-      return `z.object({ ${shapeStrs.join(", ")} })`;
+      return `z.object({${shapeStrs.join(format ? "," : ", ")}${endIndentStr}})`;
     case "tuple":
       const items = def.items as $ZodType[];
-      return `z.tuple([${items.map(zodToString).join(", ")}])`;
+      const itemStrs = items.map((i) => zodToString(i, options, nextIndent));
+      if (format && items.length > 0) {
+        return `z.tuple([${indentStr}${itemStrs.join("," + indentStr)}${endIndentStr}])`;
+      }
+      return `z.tuple([${itemStrs.join(", ")}])`;
     case "union":
-      const options = def.options as $ZodType[];
-      return `z.union([${options.map(zodToString).join(", ")}])`;
+      const optionsList = def.options as $ZodType[];
+      const optStrs = optionsList.map((o) =>
+        zodToString(o, options, nextIndent),
+      );
+      if (format && optionsList.length > 0) {
+        return `z.union([${indentStr}${optStrs.join("," + indentStr)}${endIndentStr}])`;
+      }
+      return `z.union([${optStrs.join(", ")}])`;
     case "intersection":
-      return `z.intersection(${zodToString(def.left)}, ${zodToString(def.right)})`;
+      return `z.intersection(${zodToString(def.left, options, indent)}, ${zodToString(
+        def.right,
+        options,
+        indent,
+      )})`;
     case "optional":
-      return `${zodToString(def.innerType)}.optional()`;
+      return `${zodToString(def.innerType, options, indent)}.optional()`;
     case "nullable":
-      return `${zodToString(def.innerType)}.nullable()`;
+      return `${zodToString(def.innerType, options, indent)}.nullable()`;
     default:
       return `z.${type}(...)`;
   }
