@@ -1,5 +1,11 @@
 # zod-compare
 
+## 2.0.1
+
+### Patch Changes
+
+- [`2ca3be7`](https://github.com/lawvs/zod-compare/commit/2ca3be7b6be33c4328c88e49a0e954154f518ea7) Thanks [@lawvs](https://github.com/lawvs)! - Update dependencies
+
 ## 2.0.0
 
 ### Major Changes
