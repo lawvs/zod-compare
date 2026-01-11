@@ -23,11 +23,11 @@ export const isSameTypePresetRules = [
             ...a,
             // Legacy ZodFunction compatibility - wrap def in _zod structure
             // @ts-expect-error - LegacyZodFunction has .def, modern has ._def
-            _zod: { def: (a as any).def || a._def },
+            _zod: { def: (a as any).def ?? a._def },
           },
           {
             ...b,
-            _zod: { def: (b as any).def || b._def },
+            _zod: { def: (b as any).def ?? b._def },
           },
         );
       }
