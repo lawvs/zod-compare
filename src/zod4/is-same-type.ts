@@ -21,12 +21,13 @@ export const isSameTypePresetRules = [
         return recheck(
           {
             ...a,
-            // @ts-expect-error -- make it look like a ZodType
-            _zod: { def: a.def },
+            // Legacy ZodFunction doesn't have _zod property, so we create one
+            // @ts-expect-error - LegacyZodFunction structure doesn't match $ZodType
+            _zod: { def: a._def },
           },
           {
             ...b,
-            _zod: { def: b.def },
+            _zod: { def: b._def },
           },
         );
       }
@@ -290,14 +291,10 @@ export const isSameTypePresetRules = [
     compare: (a, b, next, recheck) => {
       const aType = a._zod.def.type;
       const bType = b._zod.def.type;
-      // Upgrade zod to v4.1 to resolve it
-      // @ts-expect-error -- see https://github.com/colinhacks/zod/issues/4143
       if (aType === "function" && bType === "function") {
         // In Zod4, function def has `input` (tuple-like) and `output` (ZodType)
         return (
-          // @ts-expect-error
           recheck(a._zod.def.input, b._zod.def.input) &&
-          // @ts-expect-error
           recheck(a._zod.def.output, b._zod.def.output)
         );
       }
