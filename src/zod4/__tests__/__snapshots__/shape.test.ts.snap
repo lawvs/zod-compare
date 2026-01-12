@@ -14,6 +14,10 @@ exports[`snapshot > should z.array() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -33,6 +37,10 @@ exports[`snapshot > should z.array() match snapshot 1`] = `
         "type": "string",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -41,6 +49,10 @@ exports[`snapshot > should z.array() match snapshot 1`] = `
     "type": "array",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -117,6 +129,10 @@ exports[`snapshot > should z.enum() match snapshot 1`] = `
     "type": "enum",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -153,10 +169,37 @@ exports[`snapshot > should z.enum() match snapshot 2`] = `
 `;
 
 exports[`snapshot > should z.function() match snapshot 1`] = `
-$ZodFunction {
-  "_def": {
-    "input": {
-      "_zod": {
+{
+  "_zod": {
+    "def": {
+      "input": {
+        "_zod": {
+          "def": {
+            "items": [
+              {
+                "_zod": {
+                  "def": {
+                    "type": "string",
+                  },
+                },
+                "def": {
+                  "type": "string",
+                },
+                "~standard": {
+                  "jsonSchema": {
+                    "input": [Function],
+                    "output": [Function],
+                  },
+                  "validate": [Function],
+                  "vendor": "zod",
+                  "version": 1,
+                },
+              },
+            ],
+            "rest": null,
+            "type": "tuple",
+          },
+        },
         "def": {
           "items": [
             {
@@ -169,6 +212,10 @@ $ZodFunction {
                 "type": "string",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -178,31 +225,39 @@ $ZodFunction {
           "rest": null,
           "type": "tuple",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
-    },
-    "output": {
-      "_zod": {
+      "output": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
         "def": {
           "checks": [],
           "type": "number",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "def": {
-        "checks": [],
-        "type": "number",
-      },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
+      "type": "function",
     },
-    "type": "function",
   },
   "def": {
     "input": {
@@ -219,6 +274,10 @@ $ZodFunction {
                 "type": "string",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -229,7 +288,36 @@ $ZodFunction {
           "type": "tuple",
         },
       },
+      "def": {
+        "items": [
+          {
+            "_zod": {
+              "def": {
+                "type": "string",
+              },
+            },
+            "def": {
+              "type": "string",
+            },
+            "~standard": {
+              "jsonSchema": {
+                "input": [Function],
+                "output": [Function],
+              },
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+        ],
+        "rest": null,
+        "type": "tuple",
+      },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -247,21 +335,61 @@ $ZodFunction {
         "type": "number",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
       },
     },
     "type": "function",
+  },
+  "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
   },
 }
 `;
 
 exports[`snapshot > should z.function() match snapshot 2`] = `
-$ZodFunction {
-  "_def": {
-    "input": {
-      "_zod": {
+{
+  "_zod": {
+    "def": {
+      "input": {
+        "_zod": {
+          "def": {
+            "items": [
+              {
+                "_zod": {
+                  "def": {
+                    "type": "string",
+                  },
+                },
+                "def": {
+                  "type": "string",
+                },
+                "~standard": {
+                  "jsonSchema": {
+                    "input": [Function],
+                    "output": [Function],
+                  },
+                  "validate": [Function],
+                  "vendor": "zod",
+                  "version": 1,
+                },
+              },
+            ],
+            "rest": null,
+            "type": "tuple",
+          },
+        },
         "def": {
           "items": [
             {
@@ -274,6 +402,10 @@ $ZodFunction {
                 "type": "string",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -283,31 +415,35 @@ $ZodFunction {
           "rest": null,
           "type": "tuple",
         },
+        "~standard": {
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
-    },
-    "output": {
-      "_zod": {
+      "output": {
+        "_zod": {
+          "def": {
+            "checks": [],
+            "type": "number",
+          },
+        },
         "def": {
           "checks": [],
           "type": "number",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "def": {
-        "checks": [],
-        "type": "number",
-      },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
+      "type": "function",
     },
-    "type": "function",
   },
   "def": {
     "input": {
@@ -324,6 +460,10 @@ $ZodFunction {
                 "type": "string",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -333,6 +473,31 @@ $ZodFunction {
           "rest": null,
           "type": "tuple",
         },
+      },
+      "def": {
+        "items": [
+          {
+            "_zod": {
+              "def": {
+                "type": "string",
+              },
+            },
+            "def": {
+              "type": "string",
+            },
+            "~standard": {
+              "jsonSchema": {
+                "input": [Function],
+                "output": [Function],
+              },
+              "validate": [Function],
+              "vendor": "zod",
+              "version": 1,
+            },
+          },
+        ],
+        "rest": null,
+        "type": "tuple",
       },
       "~standard": {
         "validate": [Function],
@@ -352,21 +517,54 @@ $ZodFunction {
         "type": "number",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
       },
     },
     "type": "function",
+  },
+  "~standard": {
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
   },
 }
 `;
 
 exports[`snapshot > should z.function() with void input match snapshot 1`] = `
-$ZodFunction {
-  "_def": {
-    "input": {
-      "_zod": {
+{
+  "_zod": {
+    "def": {
+      "input": {
+        "_zod": {
+          "def": {
+            "element": {
+              "_zod": {
+                "def": {
+                  "type": "unknown",
+                },
+              },
+              "def": {
+                "type": "unknown",
+              },
+              "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
+                "validate": [Function],
+                "vendor": "zod",
+                "version": 1,
+              },
+            },
+            "type": "array",
+          },
+        },
         "def": {
           "element": {
             "_zod": {
@@ -374,7 +572,14 @@ $ZodFunction {
                 "type": "unknown",
               },
             },
+            "def": {
+              "type": "unknown",
+            },
             "~standard": {
+              "jsonSchema": {
+                "input": [Function],
+                "output": [Function],
+              },
               "validate": [Function],
               "vendor": "zod",
               "version": 1,
@@ -382,29 +587,37 @@ $ZodFunction {
           },
           "type": "array",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
-    },
-    "output": {
-      "_zod": {
+      "output": {
+        "_zod": {
+          "def": {
+            "type": "void",
+          },
+        },
         "def": {
           "type": "void",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "def": {
-        "type": "void",
-      },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
+      "type": "function",
     },
-    "type": "function",
   },
   "def": {
     "input": {
@@ -416,7 +629,14 @@ $ZodFunction {
                 "type": "unknown",
               },
             },
+            "def": {
+              "type": "unknown",
+            },
             "~standard": {
+              "jsonSchema": {
+                "input": [Function],
+                "output": [Function],
+              },
               "validate": [Function],
               "vendor": "zod",
               "version": 1,
@@ -425,7 +645,33 @@ $ZodFunction {
           "type": "array",
         },
       },
+      "def": {
+        "element": {
+          "_zod": {
+            "def": {
+              "type": "unknown",
+            },
+          },
+          "def": {
+            "type": "unknown",
+          },
+          "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
+            "validate": [Function],
+            "vendor": "zod",
+            "version": 1,
+          },
+        },
+        "type": "array",
+      },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -441,49 +687,77 @@ $ZodFunction {
         "type": "void",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
       },
     },
     "type": "function",
+  },
+  "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
   },
 }
 `;
 
 exports[`snapshot > should z.function() with void input match snapshot 2`] = `
-$ZodFunction {
-  "_def": {
-    "input": {
-      "_zod": {
+{
+  "_zod": {
+    "def": {
+      "input": {
+        "_zod": {
+          "def": {
+            "items": [],
+            "rest": null,
+            "type": "tuple",
+          },
+        },
         "def": {
           "items": [],
           "rest": null,
           "type": "tuple",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
-    },
-    "output": {
-      "_zod": {
+      "output": {
+        "_zod": {
+          "def": {
+            "type": "void",
+          },
+        },
         "def": {
           "type": "void",
         },
+        "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
+          "validate": [Function],
+          "vendor": "zod",
+          "version": 1,
+        },
       },
-      "def": {
-        "type": "void",
-      },
-      "~standard": {
-        "validate": [Function],
-        "vendor": "zod",
-        "version": 1,
-      },
+      "type": "function",
     },
-    "type": "function",
   },
   "def": {
     "input": {
@@ -494,7 +768,16 @@ $ZodFunction {
           "type": "tuple",
         },
       },
+      "def": {
+        "items": [],
+        "rest": null,
+        "type": "tuple",
+      },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -510,12 +793,25 @@ $ZodFunction {
         "type": "void",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
       },
     },
     "type": "function",
+  },
+  "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
+    "validate": [Function],
+    "vendor": "zod",
+    "version": 1,
   },
 }
 `;
@@ -534,6 +830,10 @@ exports[`snapshot > should z.intersection() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -551,6 +851,10 @@ exports[`snapshot > should z.intersection() match snapshot 1`] = `
           "type": "number",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -570,6 +874,10 @@ exports[`snapshot > should z.intersection() match snapshot 1`] = `
         "type": "string",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -587,6 +895,10 @@ exports[`snapshot > should z.intersection() match snapshot 1`] = `
         "type": "number",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -595,6 +907,10 @@ exports[`snapshot > should z.intersection() match snapshot 1`] = `
     "type": "intersection",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -701,6 +1017,10 @@ exports[`snapshot > should z.literal() match snapshot 1`] = `
     ],
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -752,6 +1072,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
                   "type": "number",
                 },
                 "~standard": {
+                  "jsonSchema": {
+                    "input": [Function],
+                    "output": [Function],
+                  },
                   "validate": [Function],
                   "vendor": "zod",
                   "version": 1,
@@ -773,6 +1097,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
                 "type": "number",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -781,6 +1109,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
             "type": "nullable",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -796,6 +1128,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
             "type": "string",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -822,6 +1158,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
                 "type": "number",
               },
               "~standard": {
+                "jsonSchema": {
+                  "input": [Function],
+                  "output": [Function],
+                },
                 "validate": [Function],
                 "vendor": "zod",
                 "version": 1,
@@ -843,6 +1183,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
               "type": "number",
             },
             "~standard": {
+              "jsonSchema": {
+                "input": [Function],
+                "output": [Function],
+              },
               "validate": [Function],
               "vendor": "zod",
               "version": 1,
@@ -851,6 +1195,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
           "type": "nullable",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -866,6 +1214,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -875,6 +1227,10 @@ exports[`snapshot > should z.object() match snapshot 1`] = `
     "type": "object",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1046,6 +1402,10 @@ exports[`snapshot > should z.object() variant match snapshot 1`] = `
           "type": "unknown",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1066,6 +1426,10 @@ exports[`snapshot > should z.object() variant match snapshot 1`] = `
         "type": "unknown",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1075,6 +1439,10 @@ exports[`snapshot > should z.object() variant match snapshot 1`] = `
     "type": "object",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1096,6 +1464,10 @@ exports[`snapshot > should z.object() variant match snapshot 2`] = `
           "type": "never",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1116,6 +1488,10 @@ exports[`snapshot > should z.object() variant match snapshot 2`] = `
         "type": "never",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1125,6 +1501,10 @@ exports[`snapshot > should z.object() variant match snapshot 2`] = `
     "type": "object",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1146,6 +1526,10 @@ exports[`snapshot > should z.promise() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1165,6 +1549,10 @@ exports[`snapshot > should z.promise() match snapshot 1`] = `
         "type": "string",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1173,6 +1561,10 @@ exports[`snapshot > should z.promise() match snapshot 1`] = `
     "type": "promise",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1242,6 +1634,10 @@ exports[`snapshot > should z.record() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1260,6 +1656,10 @@ exports[`snapshot > should z.record() match snapshot 1`] = `
           "type": "number",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1278,6 +1678,10 @@ exports[`snapshot > should z.record() match snapshot 1`] = `
         "type": "string",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1296,6 +1700,10 @@ exports[`snapshot > should z.record() match snapshot 1`] = `
         "type": "number",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1303,6 +1711,10 @@ exports[`snapshot > should z.record() match snapshot 1`] = `
     },
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1403,6 +1815,10 @@ exports[`snapshot > should z.string() match snapshot 1`] = `
     "type": "string",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1443,6 +1859,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
             "type": "string",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -1460,6 +1880,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
             "type": "number",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -1476,6 +1900,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
           "type": "boolean",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1496,6 +1924,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1513,6 +1945,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
           "type": "number",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1529,6 +1965,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
         "type": "boolean",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1537,6 +1977,10 @@ exports[`snapshot > should z.tuple() match snapshot 1`] = `
     "type": "tuple",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,
@@ -1592,6 +2036,10 @@ exports[`snapshot > should z.tuple() match snapshot 2`] = `
           "type": "boolean",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1645,6 +2093,10 @@ exports[`snapshot > should z.tuple() match snapshot 2`] = `
         "type": "boolean",
       },
       "~standard": {
+        "jsonSchema": {
+          "input": [Function],
+          "output": [Function],
+        },
         "validate": [Function],
         "vendor": "zod",
         "version": 1,
@@ -1675,6 +2127,10 @@ exports[`snapshot > should z.union() match snapshot 1`] = `
             "type": "string",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -1692,6 +2148,10 @@ exports[`snapshot > should z.union() match snapshot 1`] = `
             "type": "number",
           },
           "~standard": {
+            "jsonSchema": {
+              "input": [Function],
+              "output": [Function],
+            },
             "validate": [Function],
             "vendor": "zod",
             "version": 1,
@@ -1713,6 +2173,10 @@ exports[`snapshot > should z.union() match snapshot 1`] = `
           "type": "string",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1730,6 +2194,10 @@ exports[`snapshot > should z.union() match snapshot 1`] = `
           "type": "number",
         },
         "~standard": {
+          "jsonSchema": {
+            "input": [Function],
+            "output": [Function],
+          },
           "validate": [Function],
           "vendor": "zod",
           "version": 1,
@@ -1739,6 +2207,10 @@ exports[`snapshot > should z.union() match snapshot 1`] = `
     "type": "union",
   },
   "~standard": {
+    "jsonSchema": {
+      "input": [Function],
+      "output": [Function],
+    },
     "validate": [Function],
     "vendor": "zod",
     "version": 1,

@@ -12,8 +12,6 @@ export default defineConfig({
     lib: {
       entry: {
         index: resolve(__dirname, "src/index.ts"),
-        zod3: resolve(__dirname, "src/zod3/index.ts"),
-        zod4: resolve(__dirname, "src/zod4/index.ts"),
       },
       formats: ["es", "cjs"],
     },

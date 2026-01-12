@@ -72,7 +72,6 @@ const typesSet: Set<string> = new Set([
   "promise",
   "lazy",
   "custom",
-  // @ts-expect-error -- $ZodTypes includes function after v4.1
   "function",
 ] satisfies $ZodTypes["_zod"]["def"]["type"][]);
 
