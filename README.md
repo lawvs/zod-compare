@@ -46,7 +46,6 @@ Use the top-level helpers to compare schemas:
 - `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
 - `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
 
-
 ## Advanced Usage
 
 ### Custom Rules
