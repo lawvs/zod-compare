@@ -53,6 +53,7 @@ Use the top-level helpers to compare schemas:
 You can use `createCompareFn` to create a custom comparison function.
 
 ```ts
+import { z } from "zod";
 import {
   createCompareFn,
   isSameTypePresetRules,
@@ -62,8 +63,10 @@ import {
 const customRule = defineCompareRule(
   "compare description",
   (a, b, next, recheck, context) => {
-    // If the schemas are not having the same description, return false
-    if (a.description !== b.description) {
+    // In Zod 4, .describe() stores metadata via z.globalRegistry
+    const metaA = z.globalRegistry.get(a);
+    const metaB = z.globalRegistry.get(b);
+    if (metaA?.description !== metaB?.description) {
       return false;
     }
     return next();
@@ -121,11 +124,8 @@ import { createCompareFn, defineCompareRule } from "zod-compare";
 
 type defineCompareRule = (
   name: string,
-  rule: CompareFn,
-) => {
-  name: string;
-  rule: CompareFn;
-};
+  compare: CompareFn,
+) => CompareRule;
 
 type createCompareFn = (rules: CompareRule[]) => typeof isSameType;
 

@@ -1,6 +1,9 @@
-import type { CompareFn } from "./types.ts";
+import type { CompareFn, CompareRule } from "./types.ts";
 
-export const defineCompareRule = (name: string, rule: CompareFn) => ({
+export const defineCompareRule = (
+  name: string,
+  compare: CompareFn,
+): CompareRule => ({
   name,
-  rule,
+  compare,
 });
