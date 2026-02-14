@@ -5,7 +5,7 @@
 
 Compare two [Zod](https://zod.dev/) schemas recursively.
 
-`zod-compare` provides functions to compare Zod schemas, allowing you to determine whether two schemas are the same or compatible. Supports both Zod v3 and Zod v4.
+`zod-compare` provides functions to compare Zod schemas, allowing you to determine whether two schemas are the same or compatible. Supports Zod v4.
 
 ## Installation
 
@@ -45,21 +45,6 @@ Use the top-level helpers to compare schemas:
 
 - `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
 - `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
-
-### Versions and entry points
-
-The top-level APIs accept inputs from Zod v3 or v4 and automatically route to the right comparison engine when both inputs are from the same major. If inputs are mixed (v3 vs v4), both functions throw.
-
-If you’re on Zod v4, import from the v4 entry for the best types/inference:
-
-```ts
-import { isSameType } from "zod-compare/zod4";
-import { z } from "zod/v4";
-
-isSameType(z.string(), z.string()); // true
-```
-
-If you use Zod v3 exclusively, import from `zod-compare/zod3`.
 
 ## Advanced Usage
 
