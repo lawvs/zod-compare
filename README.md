@@ -122,10 +122,7 @@ Creates a custom comparison function.
 ```ts
 import { createCompareFn, defineCompareRule } from "zod-compare";
 
-type defineCompareRule = (
-  name: string,
-  compare: CompareFn,
-) => CompareRule;
+type defineCompareRule = (name: string, compare: CompareFn) => CompareRule;
 
 type createCompareFn = (rules: CompareRule[]) => typeof isSameType;
 

@@ -41,10 +41,7 @@ describe("createCompareFn with custom rules", () => {
 
     // Same type, different description → false (custom rule rejects)
     expect(
-      strictIsSameType(
-        z.string().describe("name"),
-        z.string().describe("age"),
-      ),
+      strictIsSameType(z.string().describe("name"), z.string().describe("age")),
     ).toBe(false);
 
     // Same type, no description → true (both undefined)
@@ -84,17 +81,17 @@ describe("createCompareFn with custom rules", () => {
     ]);
 
     // Both optional with same inner type → true
-    expect(
-      strictCompare(z.string().optional(), z.string().optional()),
-    ).toBe(true);
+    expect(strictCompare(z.string().optional(), z.string().optional())).toBe(
+      true,
+    );
 
     // One optional, one not → false (custom rule rejects)
     expect(strictCompare(z.string().optional(), z.string())).toBe(false);
 
     // Both optional but different inner → false
-    expect(
-      strictCompare(z.string().optional(), z.number().optional()),
-    ).toBe(false);
+    expect(strictCompare(z.string().optional(), z.number().optional())).toBe(
+      false,
+    );
   });
 
   test("should support a rule that short-circuits with context", () => {
@@ -135,10 +132,7 @@ describe("createCompareFn with custom rules", () => {
     const onlyStrings: CompareRule = {
       name: "only compare strings",
       compare: (a, b, _next) => {
-        if (
-          a._zod.def.type === "string" &&
-          b._zod.def.type === "string"
-        ) {
+        if (a._zod.def.type === "string" && b._zod.def.type === "string") {
           return true;
         }
         return false;
