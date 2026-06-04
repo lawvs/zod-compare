@@ -4,7 +4,7 @@ import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import { flatUnwrapUnion, isZodType, isZodTypes } from "./utils.ts";
 
-type PrimitiveKind = "undefined" | "null";
+type NullishKind = "undefined" | "null";
 
 const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
@@ -19,15 +19,15 @@ const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   return undefined;
 };
 
-const schemaAcceptsPrimitiveKind = (
+const schemaAcceptsNullishKind = (
   schema: $ZodType,
-  primitiveKind: PrimitiveKind,
+  nullishKind: NullishKind,
 ): boolean => {
   if (!isZodType(schema) || !isZodTypes(schema)) return false;
 
   const def = schema._zod.def;
   if (
-    def.type === primitiveKind ||
+    def.type === nullishKind ||
     def.type === "any" ||
     def.type === "unknown"
   ) {
@@ -35,24 +35,20 @@ const schemaAcceptsPrimitiveKind = (
   }
 
   if (def.type === "optional") {
-    if (primitiveKind === "undefined") return true;
+    if (nullishKind === "undefined") return true;
     const innerType = getInnerType(schema);
-    return innerType
-      ? schemaAcceptsPrimitiveKind(innerType, primitiveKind)
-      : false;
+    return innerType ? schemaAcceptsNullishKind(innerType, nullishKind) : false;
   }
 
   if (def.type === "nullable") {
-    if (primitiveKind === "null") return true;
+    if (nullishKind === "null") return true;
     const innerType = getInnerType(schema);
-    return innerType
-      ? schemaAcceptsPrimitiveKind(innerType, primitiveKind)
-      : false;
+    return innerType ? schemaAcceptsNullishKind(innerType, nullishKind) : false;
   }
 
   if (def.type === "union") {
     return flatUnwrapUnion(schema as $ZodUnion).some((option) =>
-      schemaAcceptsPrimitiveKind(option, primitiveKind),
+      schemaAcceptsNullishKind(option, nullishKind),
     );
   }
 
@@ -151,7 +147,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
           providedDef.type === "optional" ? "undefined" : "null";
         return (
           recheck(expectedType, innerType) &&
-          schemaAcceptsPrimitiveKind(expectedType, primitiveKind)
+          schemaAcceptsNullishKind(expectedType, primitiveKind)
         );
       }
       return next();
@@ -168,7 +164,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
           expectedDef.type === "optional" ? "undefined" : "null";
         return (
           recheck(innerType, providedType) ||
-          schemaAcceptsPrimitiveKind(providedType, primitiveKind)
+          schemaAcceptsNullishKind(providedType, primitiveKind)
         );
       }
       return next();
@@ -271,7 +267,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
         const providedShape = providedType._zod.def.shape;
         for (const key in expectedShape) {
           if (!(key in providedShape)) {
-            if (!schemaAcceptsPrimitiveKind(expectedShape[key], "undefined")) {
+            if (!schemaAcceptsNullishKind(expectedShape[key], "undefined")) {
               return false;
             }
             continue;
