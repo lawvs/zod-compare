@@ -152,6 +152,16 @@ In subtype-order terminology, `expectedType` is the higher type and
 `z.object({ name, other }) <= z.object({ name })`, so the wider `{ name }`
 schema can be used as the expected type.
 
+A useful TypeScript mental model is:
+
+```ts
+const provided = null as unknown as z.infer<typeof providedType>;
+const expected: z.infer<typeof expectedType> = provided;
+```
+
+If TypeScript accepts this assignment, `isCompatibleType(expectedType,
+providedType)` should return `true` for the supported Zod schema kinds.
+
 ### Preset Rules
 
 You can use the preset rules `isSameTypePresetRules` and `isCompatibleTypePresetRules` to create custom comparison functions.
