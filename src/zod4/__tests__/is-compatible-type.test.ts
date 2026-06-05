@@ -22,6 +22,10 @@ describe("isCompatibleType", () => {
     );
     expect(isCompatibleType(z.string().nullable(), z.string())).toBe(true);
     expect(isCompatibleType(z.string(), z.string().nullable())).toBe(false);
+    expect(isCompatibleType(z.void(), z.undefined())).toBe(true);
+    expect(isCompatibleType(z.undefined(), z.void())).toBe(false);
+    expect(isCompatibleType(z.number(), z.nan())).toBe(true);
+    expect(isCompatibleType(z.nan(), z.number())).toBe(true);
   });
 
   test("does not treat promise inner nullish types as outer nullish values", () => {
@@ -133,6 +137,24 @@ describe("isCompatibleType", () => {
     expect(
       isCompatibleType(
         z.object({
+          name: z.union([z.string(), z.undefined()]),
+        }),
+        z.object({}),
+      ),
+    ).toBe(false);
+
+    expect(
+      isCompatibleType(
+        z.object({
+          name: z.undefined(),
+        }),
+        z.object({}),
+      ),
+    ).toBe(false);
+
+    expect(
+      isCompatibleType(
+        z.object({
           name: z.string().optional(),
         }),
         z.object({
@@ -221,6 +243,18 @@ describe("isCompatibleType", () => {
         z.record(z.string(), z.unknown()),
       ),
     ).toBe(false);
+    expect(
+      isCompatibleType(
+        z.record(z.number(), z.string()),
+        z.record(z.string(), z.string()),
+      ),
+    ).toBe(true);
+    expect(
+      isCompatibleType(
+        z.record(z.string(), z.string()),
+        z.record(z.number(), z.string()),
+      ),
+    ).toBe(true);
 
     expect(
       isCompatibleType(
@@ -240,6 +274,11 @@ describe("isCompatibleType", () => {
   });
 
   test("compares enum and literal subset assignability", () => {
+    enum NumericEnum {
+      A,
+      B,
+    }
+
     expect(isCompatibleType(z.literal("a"), z.literal("a"))).toBe(true);
     expect(
       isCompatibleType(z.literal("a").or(z.literal("b")), z.literal("a")),
@@ -251,6 +290,9 @@ describe("isCompatibleType", () => {
 
     expect(isCompatibleType(z.enum(["a", "b"]), z.literal("a"))).toBe(true);
     expect(isCompatibleType(z.literal("a"), z.enum(["a", "b"]))).toBe(false);
+    expect(isCompatibleType(z.number(), z.enum(NumericEnum))).toBe(true);
+    expect(isCompatibleType(z.enum(NumericEnum), z.literal(0))).toBe(true);
+    expect(isCompatibleType(z.literal(0), z.enum(NumericEnum))).toBe(false);
 
     expect(isCompatibleType(z.string(), z.literal("a"))).toBe(true);
     expect(isCompatibleType(z.string(), z.enum(["a", "b"]))).toBe(true);

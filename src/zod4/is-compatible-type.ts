@@ -73,6 +73,47 @@ const schemaAcceptsNull = (schema: $ZodType): boolean => {
   return false;
 };
 
+const schemaAllowsMissingObjectKey = (schema: $ZodType): boolean => {
+  if (!isZodType(schema) || !isZodTypes(schema)) return false;
+
+  const def = schema._zod.def;
+  if (def.type === "optional") {
+    return true;
+  }
+
+  if (def.type === "nullable") {
+    const innerType = getInnerType(schema);
+    return innerType ? schemaAllowsMissingObjectKey(innerType) : false;
+  }
+
+  return false;
+};
+
+const isNumericEnumReverseEntry = (
+  entries: Record<string, unknown>,
+  key: string,
+  value: unknown,
+): boolean => {
+  if (typeof value !== "string") return false;
+  const numericKey = Number(key);
+  return Number.isFinite(numericKey) && Object.is(entries[value], numericKey);
+};
+
+const getEnumValues = (
+  entries: Record<string, unknown>,
+): readonly unknown[] => {
+  const values = Object.entries(entries)
+    .filter(([key, value]) => !isNumericEnumReverseEntry(entries, key, value))
+    .map(([, value]) => value);
+  return Array.from(new Set(values));
+};
+
+/**
+ * Extracts the finite value set represented by literal and enum schemas.
+ *
+ * These values can be compared with subset logic before falling back to broader
+ * kind rules.
+ */
 const getFiniteLiteralValues = (
   schema: $ZodTypes,
 ): readonly unknown[] | undefined => {
@@ -81,7 +122,7 @@ const getFiniteLiteralValues = (
     return def.values as readonly unknown[];
   }
   if (def.type === "enum") {
-    return Object.values(def.entries as Record<string, unknown>);
+    return getEnumValues(def.entries as Record<string, unknown>);
   }
   return undefined;
 };
@@ -94,7 +135,8 @@ const primitiveKindAcceptsValue = (
     case "string":
       return typeof value === "string";
     case "number":
-      return typeof value === "number" && !Number.isNaN(value);
+    case "nan":
+      return typeof value === "number";
     case "bigint":
       return typeof value === "bigint";
     case "boolean":
@@ -106,11 +148,45 @@ const primitiveKindAcceptsValue = (
       return value === undefined;
     case "null":
       return value === null;
-    case "nan":
-      return typeof value === "number" && Number.isNaN(value);
     default:
       return false;
   }
+};
+
+const primitiveKindsAreCompatible = (
+  expectedKind: $ZodTypes["_zod"]["def"]["type"],
+  providedKind: $ZodTypes["_zod"]["def"]["type"],
+): boolean | undefined => {
+  if (expectedKind === "void" && providedKind === "undefined") {
+    return true;
+  }
+
+  if (
+    (expectedKind === "number" || expectedKind === "nan") &&
+    (providedKind === "number" || providedKind === "nan")
+  ) {
+    return true;
+  }
+
+  return undefined;
+};
+
+const recordKeysAreCompatible = (
+  expectedKeyType: $ZodType,
+  providedKeyType: $ZodType,
+  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
+): boolean => {
+  const expectedKind = expectedKeyType._zod.def.type;
+  const providedKind = providedKeyType._zod.def.type;
+
+  if (
+    (expectedKind === "string" && providedKind === "number") ||
+    (expectedKind === "number" && providedKind === "string")
+  ) {
+    return true;
+  }
+
+  return recheck(expectedKeyType, providedKeyType);
 };
 
 export const isCompatibleTypePresetRules: CompareRule[] = [
@@ -251,6 +327,16 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     },
   },
   {
+    name: "check primitive assignability",
+    compare: (expectedType, providedType, next) => {
+      const result = primitiveKindsAreCompatible(
+        expectedType._zod.def.type,
+        providedType._zod.def.type,
+      );
+      return result ?? next();
+    },
+  },
+  {
     name: "check array tuple cross compatibility",
     compare: (expectedType, providedType, next, recheck) => {
       const expectedKind = expectedType._zod.def.type;
@@ -295,7 +381,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
         const providedShape = providedType._zod.def.shape;
         for (const key in expectedShape) {
           if (!(key in providedShape)) {
-            if (!schemaAcceptsUndefined(expectedShape[key])) {
+            if (!schemaAllowsMissingObjectKey(expectedShape[key])) {
               return false;
             }
             continue;
@@ -358,9 +444,10 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       const providedKind = providedType._zod.def.type;
       if (expectedKind === "record" && providedKind === "record") {
         return (
-          recheck(
+          recordKeysAreCompatible(
             expectedType._zod.def.keyType,
             providedType._zod.def.keyType,
+            recheck,
           ) &&
           recheck(
             expectedType._zod.def.valueType,

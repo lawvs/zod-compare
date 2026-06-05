@@ -172,6 +172,10 @@ expectTypeOf<z.infer<typeof providedType>>().toExtend<
 If TypeScript accepts this assignment, `isCompatibleType(expectedType,
 providedType)` should return `true` for the supported Zod schema kinds.
 
+`isCompatibleType` can only compare schema information available at runtime.
+Zod 4 brands are type-only, so branded schemas compare like their underlying
+runtime schema.
+
 ### Preset Rules
 
 You can use the preset rules `isSameTypePresetRules` and `isCompatibleTypePresetRules` to create custom comparison functions.
