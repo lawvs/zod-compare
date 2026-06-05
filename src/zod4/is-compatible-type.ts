@@ -4,8 +4,6 @@ import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import { flatUnwrapUnion, isZodType, isZodTypes } from "./utils.ts";
 
-type NullishKind = "undefined" | "null";
-
 const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
   if (
@@ -19,15 +17,12 @@ const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   return undefined;
 };
 
-const schemaAcceptsNullishKind = (
-  schema: $ZodType,
-  nullishKind: NullishKind,
-): boolean => {
+const schemaAcceptsUndefined = (schema: $ZodType): boolean => {
   if (!isZodType(schema) || !isZodTypes(schema)) return false;
 
   const def = schema._zod.def;
   if (
-    def.type === nullishKind ||
+    def.type === "undefined" ||
     def.type === "any" ||
     def.type === "unknown"
   ) {
@@ -35,20 +30,43 @@ const schemaAcceptsNullishKind = (
   }
 
   if (def.type === "optional") {
-    if (nullishKind === "undefined") return true;
-    const innerType = getInnerType(schema);
-    return innerType ? schemaAcceptsNullishKind(innerType, nullishKind) : false;
+    return true;
   }
 
   if (def.type === "nullable") {
-    if (nullishKind === "null") return true;
     const innerType = getInnerType(schema);
-    return innerType ? schemaAcceptsNullishKind(innerType, nullishKind) : false;
+    return innerType ? schemaAcceptsUndefined(innerType) : false;
   }
 
   if (def.type === "union") {
     return flatUnwrapUnion(schema as $ZodUnion).some((option) =>
-      schemaAcceptsNullishKind(option, nullishKind),
+      schemaAcceptsUndefined(option),
+    );
+  }
+
+  return false;
+};
+
+const schemaAcceptsNull = (schema: $ZodType): boolean => {
+  if (!isZodType(schema) || !isZodTypes(schema)) return false;
+
+  const def = schema._zod.def;
+  if (def.type === "null" || def.type === "any" || def.type === "unknown") {
+    return true;
+  }
+
+  if (def.type === "optional") {
+    const innerType = getInnerType(schema);
+    return innerType ? schemaAcceptsNull(innerType) : false;
+  }
+
+  if (def.type === "nullable") {
+    return true;
+  }
+
+  if (def.type === "union") {
+    return flatUnwrapUnion(schema as $ZodUnion).some((option) =>
+      schemaAcceptsNull(option),
     );
   }
 
@@ -143,11 +161,14 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (providedDef.type === "optional" || providedDef.type === "nullable") {
         const innerType = getInnerType(providedType);
         if (!innerType) return false;
-        const primitiveKind =
-          providedDef.type === "optional" ? "undefined" : "null";
+        if (providedDef.type === "optional") {
+          return (
+            recheck(expectedType, innerType) &&
+            schemaAcceptsUndefined(expectedType)
+          );
+        }
         return (
-          recheck(expectedType, innerType) &&
-          schemaAcceptsNullishKind(expectedType, primitiveKind)
+          recheck(expectedType, innerType) && schemaAcceptsNull(expectedType)
         );
       }
       return next();
@@ -160,11 +181,14 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (expectedDef.type === "optional" || expectedDef.type === "nullable") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
-        const primitiveKind =
-          expectedDef.type === "optional" ? "undefined" : "null";
+        if (expectedDef.type === "optional") {
+          return (
+            recheck(innerType, providedType) ||
+            schemaAcceptsUndefined(providedType)
+          );
+        }
         return (
-          recheck(innerType, providedType) ||
-          schemaAcceptsNullishKind(providedType, primitiveKind)
+          recheck(innerType, providedType) || schemaAcceptsNull(providedType)
         );
       }
       return next();
@@ -267,7 +291,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
         const providedShape = providedType._zod.def.shape;
         for (const key in expectedShape) {
           if (!(key in providedShape)) {
-            if (!schemaAcceptsNullishKind(expectedShape[key], "undefined")) {
+            if (!schemaAcceptsUndefined(expectedShape[key])) {
               return false;
             }
             continue;
