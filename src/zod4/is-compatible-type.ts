@@ -153,24 +153,6 @@ const primitiveKindAcceptsValue = (
   }
 };
 
-const primitiveKindsAreCompatible = (
-  expectedKind: $ZodTypes["_zod"]["def"]["type"],
-  providedKind: $ZodTypes["_zod"]["def"]["type"],
-): boolean | undefined => {
-  if (expectedKind === "void" && providedKind === "undefined") {
-    return true;
-  }
-
-  if (
-    (expectedKind === "number" || expectedKind === "nan") &&
-    (providedKind === "number" || providedKind === "nan")
-  ) {
-    return true;
-  }
-
-  return undefined;
-};
-
 const recordKeysAreCompatible = (
   expectedKeyType: $ZodType,
   providedKeyType: $ZodType,
@@ -329,11 +311,21 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
   {
     name: "check primitive assignability",
     compare: (expectedType, providedType, next) => {
-      const result = primitiveKindsAreCompatible(
-        expectedType._zod.def.type,
-        providedType._zod.def.type,
-      );
-      return result ?? next();
+      const expectedKind = expectedType._zod.def.type;
+      const providedKind = providedType._zod.def.type;
+
+      if (expectedKind === "void" && providedKind === "undefined") {
+        return true;
+      }
+
+      if (
+        (expectedKind === "number" || expectedKind === "nan") &&
+        (providedKind === "number" || providedKind === "nan")
+      ) {
+        return true;
+      }
+
+      return next();
     },
   },
   {
