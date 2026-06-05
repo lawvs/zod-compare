@@ -89,21 +89,17 @@ const schemaAllowsMissingObjectKey = (schema: $ZodType): boolean => {
   return false;
 };
 
-const isNumericEnumReverseEntry = (
-  entries: Record<string, unknown>,
-  key: string,
-  value: unknown,
-): boolean => {
-  if (typeof value !== "string") return false;
-  const numericKey = Number(key);
-  return Number.isFinite(numericKey) && Object.is(entries[value], numericKey);
-};
-
 const getEnumValues = (
   entries: Record<string, unknown>,
 ): readonly unknown[] => {
   const values = Object.entries(entries)
-    .filter(([key, value]) => !isNumericEnumReverseEntry(entries, key, value))
+    .filter(([key, value]) => {
+      if (typeof value !== "string") return true;
+      const numericKey = Number(key);
+      return !(
+        Number.isFinite(numericKey) && Object.is(entries[value], numericKey)
+      );
+    })
     .map(([, value]) => value);
   return Array.from(new Set(values));
 };
@@ -119,38 +115,12 @@ const getFiniteLiteralValues = (
 ): readonly unknown[] | undefined => {
   const def = schema._zod.def;
   if (def.type === "literal") {
-    return def.values as readonly unknown[];
+    return def.values;
   }
   if (def.type === "enum") {
-    return getEnumValues(def.entries as Record<string, unknown>);
+    return getEnumValues(def.entries);
   }
   return undefined;
-};
-
-const primitiveKindAcceptsValue = (
-  primitiveKind: $ZodTypes["_zod"]["def"]["type"],
-  value: unknown,
-): boolean => {
-  switch (primitiveKind) {
-    case "string":
-      return typeof value === "string";
-    case "number":
-    case "nan":
-      return typeof value === "number";
-    case "bigint":
-      return typeof value === "bigint";
-    case "boolean":
-      return typeof value === "boolean";
-    case "symbol":
-      return typeof value === "symbol";
-    case "undefined":
-    case "void":
-      return value === undefined;
-    case "null":
-      return value === null;
-    default:
-      return false;
-  }
 };
 
 const recordKeysAreCompatible = (
@@ -286,26 +256,49 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     },
   },
   {
-    name: "check finite literal values",
+    name: "check finite literal subset",
     compare: (expectedType, providedType, next) => {
       const expectedValues = getFiniteLiteralValues(expectedType);
       const providedValues = getFiniteLiteralValues(providedType);
-      if (!expectedValues && providedValues) {
-        const expectedKind = expectedType._zod.def.type;
-        if (
-          providedValues.every((value) =>
-            primitiveKindAcceptsValue(expectedKind, value),
-          )
-        ) {
-          return true;
+
+      if (!expectedValues || !providedValues) {
+        return next();
+      }
+
+      const expectedSet = new Set(expectedValues);
+      return providedValues.every((value) => expectedSet.has(value));
+    },
+  },
+  {
+    name: "check finite literal to primitive",
+    compare: (expectedType, providedType, next) => {
+      const expectedValues = getFiniteLiteralValues(expectedType);
+      const providedValues = getFiniteLiteralValues(providedType);
+      if (expectedValues || !providedValues) return next();
+
+      const expectedKind = expectedType._zod.def.type;
+      return providedValues.every((value) => {
+        switch (expectedKind) {
+          case "string":
+            return typeof value === "string";
+          case "number":
+          case "nan":
+            return typeof value === "number";
+          case "bigint":
+            return typeof value === "bigint";
+          case "boolean":
+            return typeof value === "boolean";
+          case "symbol":
+            return typeof value === "symbol";
+          case "undefined":
+          case "void":
+            return value === undefined;
+          case "null":
+            return value === null;
+          default:
+            return false;
         }
-      }
-      if (expectedValues || providedValues) {
-        if (!expectedValues || !providedValues) return next();
-        const expectedSet = new Set(expectedValues);
-        return providedValues.every((value) => expectedSet.has(value));
-      }
-      return next();
+      });
     },
   },
   {
