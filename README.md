@@ -161,6 +161,14 @@ type Expected = z.infer<typeof expectedType>;
 const expected: Expected = provided;
 ```
 
+In a Vitest type test, the same relationship can be written as:
+
+```ts
+expectTypeOf<z.infer<typeof providedType>>().toExtend<
+  z.infer<typeof expectedType>
+>();
+```
+
 If TypeScript accepts this assignment, `isCompatibleType(expectedType,
 providedType)` should return `true` for the supported Zod schema kinds.
 
