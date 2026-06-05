@@ -152,15 +152,16 @@ In subtype-order terminology, `expectedType` is the higher type and
 `z.object({ name, other }) <= z.object({ name })`, so the wider `{ name }`
 schema can be used as the expected type.
 
-A useful TypeScript type-test mental model is:
+A useful TypeScript type-check-only mental model is:
 
 ```ts
-expectTypeOf<z.infer<typeof providedType>>().toExtend<
-  z.infer<typeof expectedType>
->();
+declare const provided: z.infer<typeof providedType>;
+type Expected = z.infer<typeof expectedType>;
+
+const expected: Expected = provided;
 ```
 
-If TypeScript accepts this relationship, `isCompatibleType(expectedType,
+If TypeScript accepts this assignment, `isCompatibleType(expectedType,
 providedType)` should return `true` for the supported Zod schema kinds.
 
 ### Preset Rules
