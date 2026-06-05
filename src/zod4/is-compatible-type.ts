@@ -158,15 +158,17 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     name: "check optional/nullable on provided",
     compare: (expectedType, providedType, next, recheck) => {
       const providedDef = providedType._zod.def;
-      if (providedDef.type === "optional" || providedDef.type === "nullable") {
+      if (providedDef.type === "optional") {
         const innerType = getInnerType(providedType);
         if (!innerType) return false;
-        if (providedDef.type === "optional") {
-          return (
-            recheck(expectedType, innerType) &&
-            schemaAcceptsUndefined(expectedType)
-          );
-        }
+        return (
+          recheck(expectedType, innerType) &&
+          schemaAcceptsUndefined(expectedType)
+        );
+      }
+      if (providedDef.type === "nullable") {
+        const innerType = getInnerType(providedType);
+        if (!innerType) return false;
         return (
           recheck(expectedType, innerType) && schemaAcceptsNull(expectedType)
         );
@@ -178,15 +180,17 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     name: "check optional/nullable on expected",
     compare: (expectedType, providedType, next, recheck) => {
       const expectedDef = expectedType._zod.def;
-      if (expectedDef.type === "optional" || expectedDef.type === "nullable") {
+      if (expectedDef.type === "optional") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
-        if (expectedDef.type === "optional") {
-          return (
-            recheck(innerType, providedType) ||
-            schemaAcceptsUndefined(providedType)
-          );
-        }
+        return (
+          recheck(innerType, providedType) ||
+          schemaAcceptsUndefined(providedType)
+        );
+      }
+      if (expectedDef.type === "nullable") {
+        const innerType = getInnerType(expectedType);
+        if (!innerType) return false;
         return (
           recheck(innerType, providedType) || schemaAcceptsNull(providedType)
         );
