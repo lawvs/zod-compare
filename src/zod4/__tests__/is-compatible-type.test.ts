@@ -24,6 +24,15 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(z.string(), z.string().nullable())).toBe(false);
   });
 
+  test("does not treat promise inner nullish types as outer nullish values", () => {
+    expect(isCompatibleType(z.string().nullable(), z.promise(z.null()))).toBe(
+      false,
+    );
+    expect(
+      isCompatibleType(z.string().optional(), z.promise(z.undefined())),
+    ).toBe(false);
+  });
+
   test("compares TypeScript top, bottom, and any-like schemas", () => {
     expect(isCompatibleType(z.unknown(), z.string())).toBe(true);
     expect(isCompatibleType(z.string(), z.unknown())).toBe(false);
