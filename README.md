@@ -35,8 +35,8 @@ isSameType(
 // false
 
 isCompatibleType(
-  z.object({ name: z.string(), other: z.number() }),
   z.object({ name: z.string() }),
+  z.object({ name: z.string(), other: z.number() }),
 );
 // true
 ```
@@ -44,7 +44,7 @@ isCompatibleType(
 Use the top-level helpers to compare schemas:
 
 - `isSameType(a, b)`: true only if the two schemas have the same shape and types (ignores refinements like min/max/length, transforms, etc.)
-- `isCompatibleType(higherType, lowerType)`: true if the looser schema (higherType) can be accepted wherever the stricter schema (lowerType) is expected
+- `isCompatibleType(expectedType, providedType)`: true if every value described by `providedType` is assignable to `expectedType` (`providedType <= expectedType`)
 
 ## Advanced Usage
 
@@ -137,10 +137,44 @@ Compares two Zod schemas and returns `true` if they are compatible.
 
 ```ts
 import { isCompatibleType } from "zod-compare";
-// The `higherType` should be a looser type
-// The `lowerType` should be a stricter type
-type isCompatibleType: (higherType: $ZodType, lowerType: $ZodType) => boolean;
+// The `expectedType` should be the wider/supertype schema.
+// The `providedType` should be the narrower/subtype schema.
+// Returns true when providedType <= expectedType.
+type isCompatibleType: (
+  expectedType: $ZodType,
+  providedType: $ZodType,
+  context?: CompareContext,
+) => boolean;
 ```
+
+In subtype-order terminology, `expectedType` is the higher type and
+`providedType` is the lower type. For example,
+`z.object({ name, other }) <= z.object({ name })`, so the wider `{ name }`
+schema can be used as the expected type.
+
+A useful TypeScript type-check-only mental model is:
+
+```ts
+declare const provided: z.infer<typeof providedType>;
+type Expected = z.infer<typeof expectedType>;
+
+const expected: Expected = provided;
+```
+
+In a Vitest type test, the same relationship can be written as:
+
+```ts
+expectTypeOf<z.infer<typeof providedType>>().toExtend<
+  z.infer<typeof expectedType>
+>();
+```
+
+If TypeScript accepts this assignment, `isCompatibleType(expectedType,
+providedType)` should return `true` for the supported Zod schema kinds.
+
+`isCompatibleType` can only compare schema information available at runtime.
+Zod 4 brands are type-only, so branded schemas compare like their underlying
+runtime schema.
 
 ### Preset Rules
 
