@@ -26,6 +26,31 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(z.undefined(), z.void())).toBe(false);
     expect(isCompatibleType(z.number(), z.nan())).toBe(true);
     expect(isCompatibleType(z.nan(), z.number())).toBe(true);
+    expect(isCompatibleType(z.string().optional(), z.literal(undefined))).toBe(
+      true,
+    );
+    expect(isCompatibleType(z.string().nullable(), z.literal(null))).toBe(true);
+    expect(
+      isCompatibleType(
+        z.string().optional(),
+        z.union([z.string(), z.undefined()]),
+      ),
+    ).toBe(true);
+    expect(
+      isCompatibleType(
+        z.string().optional(),
+        z.union([z.string(), z.number(), z.undefined()]),
+      ),
+    ).toBe(false);
+    expect(
+      isCompatibleType(z.string().nullable(), z.union([z.string(), z.null()])),
+    ).toBe(true);
+    expect(
+      isCompatibleType(
+        z.string().nullable(),
+        z.union([z.string(), z.number(), z.null()]),
+      ),
+    ).toBe(false);
   });
 
   test("does not treat promise inner nullish types as outer nullish values", () => {
@@ -253,6 +278,24 @@ describe("isCompatibleType", () => {
       isCompatibleType(
         z.record(z.string(), z.string()),
         z.record(z.number(), z.string()),
+      ),
+    ).toBe(true);
+    expect(
+      isCompatibleType(
+        z.record(z.enum(["a"]), z.string()),
+        z.record(z.enum(["a", "b"]), z.string()),
+      ),
+    ).toBe(true);
+    expect(
+      isCompatibleType(
+        z.record(z.enum(["a", "b"]), z.string()),
+        z.record(z.enum(["a"]), z.string()),
+      ),
+    ).toBe(false);
+    expect(
+      isCompatibleType(
+        z.record(z.enum(["a"]), z.string()),
+        z.record(z.string(), z.string()),
       ),
     ).toBe(true);
 

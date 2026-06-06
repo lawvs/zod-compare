@@ -29,6 +29,10 @@ const schemaAcceptsUndefined = (schema: $ZodType): boolean => {
     return true;
   }
 
+  if (def.type === "literal") {
+    return def.values.includes(undefined);
+  }
+
   if (def.type === "optional") {
     return true;
   }
@@ -55,6 +59,10 @@ const schemaAcceptsNull = (schema: $ZodType): boolean => {
     return true;
   }
 
+  if (def.type === "literal") {
+    return def.values.includes(null);
+  }
+
   if (def.type === "optional") {
     const innerType = getInnerType(schema);
     return innerType ? schemaAcceptsNull(innerType) : false;
@@ -73,6 +81,14 @@ const schemaAcceptsNull = (schema: $ZodType): boolean => {
   return false;
 };
 
+/**
+ * Checks whether an object property may be omitted for the inferred TypeScript
+ * object type.
+ *
+ * This is narrower than accepting `undefined` as a value. For example,
+ * `z.union([z.string(), z.undefined()])` accepts `undefined`, but still infers a
+ * required property when used in `z.object({ key: ... })`.
+ */
 const schemaAllowsMissingObjectKey = (schema: $ZodType): boolean => {
   if (!isZodType(schema) || !isZodTypes(schema)) return false;
 
@@ -136,6 +152,33 @@ const recordKeysAreCompatible = (
     (expectedKind === "number" && providedKind === "string")
   ) {
     return true;
+  }
+
+  const expectedValues = isZodTypes(expectedKeyType)
+    ? getFiniteLiteralValues(expectedKeyType)
+    : undefined;
+  const providedValues = isZodTypes(providedKeyType)
+    ? getFiniteLiteralValues(providedKeyType)
+    : undefined;
+
+  if (expectedValues && providedValues) {
+    const providedSet = new Set(providedValues);
+    return expectedValues.every((value) => providedSet.has(value));
+  }
+
+  if (expectedValues && isZodTypes(providedKeyType)) {
+    return expectedValues.every((value) => {
+      switch (providedKind) {
+        case "string":
+          return typeof value === "string";
+        case "number":
+          return typeof value === "number";
+        case "symbol":
+          return typeof value === "symbol";
+        default:
+          return false;
+      }
+    });
   }
 
   return recheck(expectedKeyType, providedKeyType);
@@ -211,6 +254,11 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (expectedDef.type === "optional") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
+        if (providedType._zod.def.type === "union") {
+          return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
+            recheck(expectedType, option),
+          );
+        }
         return (
           recheck(innerType, providedType) ||
           schemaAcceptsUndefined(providedType)
@@ -219,6 +267,11 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (expectedDef.type === "nullable") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
+        if (providedType._zod.def.type === "union") {
+          return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
+            recheck(expectedType, option),
+          );
+        }
         return (
           recheck(innerType, providedType) || schemaAcceptsNull(providedType)
         );
