@@ -128,10 +128,7 @@ export const hasZodTrait = (schema: $ZodType, trait: string): boolean => {
 };
 
 export const isExactOptionalType = (schema: $ZodType): boolean => {
-  return (
-    hasZodTrait(schema, "ZodExactOptional") ||
-    hasZodTrait(schema, "$ZodExactOptional")
-  );
+  return hasZodTrait(schema, "$ZodExactOptional");
 };
 
 export const isExclusiveUnion = <
