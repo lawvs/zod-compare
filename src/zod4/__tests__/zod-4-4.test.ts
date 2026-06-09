@@ -1,4 +1,4 @@
-import { describe, expect, expectTypeOf, test } from "vitest";
+import { describe, expect, expectTypeOf, test, vi } from "vitest";
 import { z } from "zod/v4";
 import { isCompatibleType } from "../is-compatible-type.ts";
 import { isSameType } from "../is-same-type.ts";
@@ -43,5 +43,19 @@ describe("zod 4.4 support", () => {
         }),
       ),
     ).toBe(true);
+  });
+
+  test("warns for pipe even though same-type structure comparison is supported", () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      expect(
+        isSameType(z.string().pipe(z.string()), z.string().pipe(z.string())),
+      ).toBe(true);
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining("[zod-compare] Runtime-only schema detected."),
+      );
+    } finally {
+      warn.mockRestore();
+    }
   });
 });
