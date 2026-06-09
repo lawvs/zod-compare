@@ -134,8 +134,12 @@ export const isExactOptionalType = (schema: $ZodType): boolean => {
   );
 };
 
-export const isExclusiveUnion = (schema: $ZodUnion): boolean => {
-  const def = schema._zod.def as $ZodUnion["_zod"]["def"] & DefWithInclusive;
+export const isExclusiveUnion = <
+  Options extends readonly SomeType[] = readonly SomeType[],
+>(
+  schema: $ZodUnion<Options>,
+): boolean => {
+  const def = schema._zod.def as typeof schema._zod.def & DefWithInclusive;
   return def.inclusive === false;
 };
 

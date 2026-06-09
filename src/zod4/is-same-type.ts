@@ -339,8 +339,7 @@ export const isSameTypePresetRules = [
       const bType = b._zod.def.type;
       if (aType === "union" && bType === "union") {
         if (
-          isExclusiveUnion(a as $ZodUnion) !==
-          isExclusiveUnion(b as $ZodUnion)
+          isExclusiveUnion(a as $ZodUnion) !== isExclusiveUnion(b as $ZodUnion)
         ) {
           return false;
         }
