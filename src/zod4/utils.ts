@@ -143,12 +143,9 @@ export const isExclusiveUnion = <
   return def.inclusive === false;
 };
 
-export const getRecordMode = (schema: $ZodTypes): "normal" | "loose" => {
+export const isLooseRecord = (schema: $ZodTypes): boolean => {
   const def = schema._zod.def as $ZodTypes["_zod"]["def"] & DefWithMode;
-  if (def.type === "record" && def.mode === "loose") {
-    return "loose";
-  }
-  return "normal";
+  return def.type === "record" && def.mode === "loose";
 };
 
 export const flatUnwrapUnion = <

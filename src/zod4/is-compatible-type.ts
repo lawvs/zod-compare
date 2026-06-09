@@ -4,9 +4,9 @@ import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  getRecordMode,
   isExactOptionalType,
   isExclusiveUnion,
+  isLooseRecord,
   isZodType,
   isZodTypes,
 } from "./utils.ts";
@@ -501,10 +501,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
       if (expectedKind === "record" && providedKind === "record") {
-        if (
-          getRecordMode(expectedType) === "normal" &&
-          getRecordMode(providedType) === "loose"
-        ) {
+        if (!isLooseRecord(expectedType) && isLooseRecord(providedType)) {
           return false;
         }
         return (

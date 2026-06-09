@@ -4,9 +4,9 @@ import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  getRecordMode,
   isExactOptionalType,
   isExclusiveUnion,
+  isLooseRecord,
   isSimpleType,
   isZodType,
   isZodTypes,
@@ -200,7 +200,7 @@ export const isSameTypePresetRules = [
       const aType = a._zod.def.type;
       const bType = b._zod.def.type;
       if (aType === "record" && bType === "record") {
-        if (getRecordMode(a) !== getRecordMode(b)) {
+        if (isLooseRecord(a) !== isLooseRecord(b)) {
           return false;
         }
         return (
