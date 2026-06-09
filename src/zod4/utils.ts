@@ -123,12 +123,8 @@ type DefWithMode = {
   mode?: string;
 };
 
-export const hasZodTrait = (schema: $ZodType, trait: string): boolean => {
-  return schema._zod.traits?.has(trait) ?? false;
-};
-
 export const isExactOptionalType = (schema: $ZodType): boolean => {
-  return hasZodTrait(schema, "$ZodExactOptional");
+  return schema._zod.traits?.has("$ZodExactOptional") ?? false;
 };
 
 export const isExclusiveUnion = <
