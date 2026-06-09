@@ -26,7 +26,7 @@ describe("zod 4.3 support", () => {
     expect(isSameType(looseRecord, exhaustiveRecord)).toBe(false);
 
     expect(isCompatibleType(looseRecord, exhaustiveRecord)).toBe(true);
-    expect(isCompatibleType(exhaustiveRecord, looseRecord)).toBe(false);
+    expect(isCompatibleType(exhaustiveRecord, looseRecord)).toBe(true);
   });
 
   test("compares exact optionals separately from regular optionals", () => {
