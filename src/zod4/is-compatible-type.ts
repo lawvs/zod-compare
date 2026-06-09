@@ -2,12 +2,7 @@ import type { $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
-import {
-  flatUnwrapUnion,
-  isExactOptionalType,
-  isZodType,
-  isZodTypes,
-} from "./utils.ts";
+import { flatUnwrapUnion, isZodType, isZodTypes } from "./utils.ts";
 
 const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
@@ -39,7 +34,7 @@ const schemaAcceptsUndefined = (schema: $ZodType): boolean => {
   }
 
   if (def.type === "optional") {
-    return !isExactOptionalType(schema);
+    return true;
   }
 
   if (def.type === "nullable") {
@@ -259,14 +254,6 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (expectedDef.type === "optional") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
-        if (isExactOptionalType(expectedType)) {
-          if (providedType._zod.def.type === "union") {
-            return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
-              recheck(innerType, option),
-            );
-          }
-          return recheck(innerType, providedType);
-        }
         if (providedType._zod.def.type === "union") {
           return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
             recheck(expectedType, option),

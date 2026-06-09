@@ -29,7 +29,7 @@ describe("zod 4.3 support", () => {
     expect(isCompatibleType(exhaustiveRecord, looseRecord)).toBe(true);
   });
 
-  test("compares exact optionals separately from regular optionals", () => {
+  test("compares exact optionals separately while relaxing compatibility", () => {
     const exactOptional = z.string().exactOptional();
     const sameExactOptional = z.string().exactOptional();
     const regularOptional = z.string().optional();
@@ -38,9 +38,9 @@ describe("zod 4.3 support", () => {
     expect(isSameType(exactOptional, regularOptional)).toBe(false);
 
     expect(isCompatibleType(regularOptional, exactOptional)).toBe(true);
-    expect(isCompatibleType(exactOptional, regularOptional)).toBe(false);
+    expect(isCompatibleType(exactOptional, regularOptional)).toBe(true);
     expect(isCompatibleType(exactOptional, z.string())).toBe(true);
-    expect(isCompatibleType(exactOptional, z.undefined())).toBe(false);
+    expect(isCompatibleType(exactOptional, z.undefined())).toBe(true);
   });
 
   test("allows missing object keys for exact optional properties", () => {
@@ -64,7 +64,7 @@ describe("zod 4.3 support", () => {
           name: z.undefined(),
         }),
       ),
-    ).toBe(false);
+    ).toBe(true);
   });
 
   test("compares schemas created from JSON Schema", () => {
