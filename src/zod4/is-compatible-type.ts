@@ -2,7 +2,14 @@ import type { $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
-import { flatUnwrapUnion, isZodType, isZodTypes } from "./utils.ts";
+import {
+  flatUnwrapUnion,
+  getRecordMode,
+  isExactOptionalType,
+  isExclusiveUnion,
+  isZodType,
+  isZodTypes,
+} from "./utils.ts";
 
 const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
@@ -34,7 +41,7 @@ const schemaAcceptsUndefined = (schema: $ZodType): boolean => {
   }
 
   if (def.type === "optional") {
-    return true;
+    return !isExactOptionalType(schema);
   }
 
   if (def.type === "nullable") {
@@ -254,6 +261,14 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       if (expectedDef.type === "optional") {
         const innerType = getInnerType(expectedType);
         if (!innerType) return false;
+        if (isExactOptionalType(expectedType)) {
+          if (providedType._zod.def.type === "union") {
+            return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
+              recheck(innerType, option),
+            );
+          }
+          return recheck(innerType, providedType);
+        }
         if (providedType._zod.def.type === "union") {
           return flatUnwrapUnion(providedType as $ZodUnion).every((option) =>
             recheck(expectedType, option),
@@ -285,6 +300,11 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
       if (expectedKind === "union" && providedKind === "union") {
+        const expectedExclusive = isExclusiveUnion(expectedType as $ZodUnion);
+        const providedExclusive = isExclusiveUnion(providedType as $ZodUnion);
+        if (expectedExclusive && !providedExclusive) {
+          return false;
+        }
         const expectedOptions = flatUnwrapUnion(expectedType as $ZodUnion);
         const providedOptions = flatUnwrapUnion(providedType as $ZodUnion);
         return providedOptions.every((providedOption) =>
@@ -481,6 +501,12 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
       if (expectedKind === "record" && providedKind === "record") {
+        if (
+          getRecordMode(expectedType) === "normal" &&
+          getRecordMode(providedType) === "loose"
+        ) {
+          return false;
+        }
         return (
           recordKeysAreCompatible(
             expectedType._zod.def.keyType,
