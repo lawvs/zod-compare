@@ -11,7 +11,7 @@ describe("zod4 isSameType context", () => {
     const result = isSameType(z.number(), z.string(), context);
 
     expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(6);
+    expect(context?.stacks?.length).toEqual(7);
     expect(context?.stacks?.at(0)?.name).toEqual("compare type");
   });
 
@@ -26,7 +26,7 @@ describe("zod4 isSameType context", () => {
     );
 
     expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(16);
+    expect(context?.stacks?.length).toEqual(18);
     expect(context?.stacks?.at(0)?.name).toEqual("compare type");
   });
 
@@ -41,7 +41,7 @@ describe("zod4 isSameType context", () => {
     );
 
     expect(result).toBe(false);
-    expect(context?.stacks?.length).toEqual(20);
+    expect(context?.stacks?.length).toEqual(22);
     expect(
       context?.stacks?.map((i) => [
         i.name,

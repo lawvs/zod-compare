@@ -2,7 +2,12 @@ import type { $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
-import { flatUnwrapUnion, isZodType, isZodTypes } from "./utils.ts";
+import {
+  flatUnwrapUnion,
+  isNeverLikeType,
+  isZodType,
+  isZodTypes,
+} from "./utils.ts";
 
 const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
@@ -215,10 +220,12 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     compare: (expectedType, providedType, next) => {
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
+      const expectedNeverLike = isNeverLikeType(expectedType);
+      const providedNeverLike = isNeverLikeType(providedType);
 
-      if (providedKind === "never") return true;
+      if (providedNeverLike) return true;
       if (expectedKind === "any" || expectedKind === "unknown") return true;
-      if (expectedKind === "never") return false;
+      if (expectedNeverLike) return false;
       if (providedKind === "unknown") return false;
       if (providedKind === "any") return true;
 

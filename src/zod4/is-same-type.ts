@@ -4,6 +4,7 @@ import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
+  isNeverLikeType,
   isSimpleType,
   isZodType,
   isZodTypes,
@@ -35,9 +36,9 @@ export const isSameTypePresetRules = [
     },
   },
   {
-    name: "unstable warn",
+    name: "runtime-only warn",
     compare: (a, b, next) => {
-      const unstableTypes = new Set<string>([
+      const runtimeOnlyTypes = new Set<string>([
         "transform",
         "default",
         "prefault",
@@ -49,19 +50,18 @@ export const isSameTypePresetRules = [
       ] satisfies $ZodTypes["_zod"]["def"]["type"][]);
 
       if (
-        unstableTypes.has(a._zod.def.type) ||
-        unstableTypes.has(b._zod.def.type)
+        runtimeOnlyTypes.has(a._zod.def.type) ||
+        runtimeOnlyTypes.has(b._zod.def.type)
       ) {
         const aType = a._zod.def.type;
         const bType = b._zod.def.type;
         console.warn(
           [
-            "[zod-compare] Unstable comparison detected.",
-            "This library is designed to compare TypeScript-level types (shape/compatibility).",
-            "The involved Zod kinds are not standardized/are unstable and results may be approximate:",
+            "[zod-compare] Runtime-only schema detected.",
+            "Default rules compare TypeScript-level type behavior.",
+            "Runtime behavior for these Zod kinds may be ignored:",
             `left.type=\"${aType}\" right.type=\"${bType}\".`,
-            "Consider avoiding these kinds or validating with runtime tests if strict equality is required.",
-            "Alternatively, compose your own comparator by defining rules and using createCompareFn to override behavior for these kinds.",
+            "Use createCompareFn with a custom rule if strict runtime comparison is required.",
             a,
             b,
           ].join(" "),
@@ -97,6 +97,17 @@ export const isSameTypePresetRules = [
     compare: (a, b, next) => {
       if (a === b) {
         return true;
+      }
+      return next();
+    },
+  },
+  {
+    name: "compare never-like type",
+    compare: (a, b, next) => {
+      const aNeverLike = isNeverLikeType(a);
+      const bNeverLike = isNeverLikeType(b);
+      if (aNeverLike || bNeverLike) {
+        return aNeverLike && bNeverLike;
       }
       return next();
     },
