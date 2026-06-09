@@ -5,7 +5,6 @@ import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
   isExactOptionalType,
-  isExclusiveUnion,
   isLooseRecord,
   isZodType,
   isZodTypes,
@@ -300,11 +299,6 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
       if (expectedKind === "union" && providedKind === "union") {
-        const expectedExclusive = isExclusiveUnion(expectedType as $ZodUnion);
-        const providedExclusive = isExclusiveUnion(providedType as $ZodUnion);
-        if (expectedExclusive && !providedExclusive) {
-          return false;
-        }
         const expectedOptions = flatUnwrapUnion(expectedType as $ZodUnion);
         const providedOptions = flatUnwrapUnion(providedType as $ZodUnion);
         return providedOptions.every((providedOption) =>

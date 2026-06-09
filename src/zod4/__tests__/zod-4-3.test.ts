@@ -13,7 +13,7 @@ describe("zod 4.3 support", () => {
     expect(isSameType(xorStringNumber, inclusiveUnion)).toBe(false);
 
     expect(isCompatibleType(inclusiveUnion, xorStringNumber)).toBe(true);
-    expect(isCompatibleType(xorStringNumber, inclusiveUnion)).toBe(false);
+    expect(isCompatibleType(xorStringNumber, inclusiveUnion)).toBe(true);
     expect(isCompatibleType(xorStringNumber, z.string())).toBe(true);
   });
 
