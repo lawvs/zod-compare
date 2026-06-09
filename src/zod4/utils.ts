@@ -115,6 +115,16 @@ export const isSimpleType = (
   );
 };
 
+export const isNeverLikeType = (schema: $ZodTypes): boolean => {
+  const def = schema._zod.def;
+  return (
+    def.type === "never" ||
+    (def.type === "union" &&
+      Array.isArray((schema as $ZodUnion)._zod.def.options) &&
+      (schema as $ZodUnion)._zod.def.options.length === 0)
+  );
+};
+
 export const flatUnwrapUnion = <
   Options extends readonly SomeType[] = readonly $ZodType[],
 >(
