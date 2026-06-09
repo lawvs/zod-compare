@@ -115,15 +115,49 @@ export const isSimpleType = (
   );
 };
 
+type DefWithInclusive = {
+  inclusive?: boolean;
+};
+
+type DefWithMode = {
+  mode?: string;
+};
+
+export const hasZodTrait = (schema: $ZodType, trait: string): boolean => {
+  return schema._zod.traits?.has(trait) ?? false;
+};
+
+export const isExactOptionalType = (schema: $ZodType): boolean => {
+  return (
+    hasZodTrait(schema, "ZodExactOptional") ||
+    hasZodTrait(schema, "$ZodExactOptional")
+  );
+};
+
+export const isExclusiveUnion = (schema: $ZodUnion): boolean => {
+  const def = schema._zod.def as $ZodUnion["_zod"]["def"] & DefWithInclusive;
+  return def.inclusive === false;
+};
+
+export const getRecordMode = (schema: $ZodTypes): "normal" | "loose" => {
+  const def = schema._zod.def as $ZodTypes["_zod"]["def"] & DefWithMode;
+  if (def.type === "record" && def.mode === "loose") {
+    return "loose";
+  }
+  return "normal";
+};
+
 export const flatUnwrapUnion = <
   Options extends readonly SomeType[] = readonly $ZodType[],
 >(
   unionType: $ZodUnion<Options>,
 ): Options => {
+  const exclusive = isExclusiveUnion(unionType);
   return unionType._zod.def.options.flatMap((x) => {
     if (
       x._zod.def.type === "union" &&
-      Array.isArray((x as $ZodUnion)._zod.def.options)
+      Array.isArray((x as $ZodUnion)._zod.def.options) &&
+      isExclusiveUnion(x as $ZodUnion) === exclusive
     ) {
       return flatUnwrapUnion(x as $ZodUnion);
     }
