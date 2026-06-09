@@ -10,22 +10,44 @@
   <body>
     <div id="app">
       <h1>Zod Compare Playground</h1>
+
+      <div class="preset-bar" aria-label="Schema presets">
+        <span class="preset-label">Presets</span>
+        <button class="preset-button" type="button" data-preset="object-width">
+          Object width
+        </button>
+        <button class="preset-button" type="button" data-preset="optional">
+          Optional
+        </button>
+        <button class="preset-button" type="button" data-preset="union">
+          Union
+        </button>
+        <button class="preset-button" type="button" data-preset="enum-literal">
+          Enum literal
+        </button>
+        <button class="preset-button" type="button" data-preset="record-key">
+          Record key
+        </button>
+        <button class="preset-button" type="button" data-preset="tuple-rest">
+          Tuple rest
+        </button>
+      </div>
+
       <div class="container">
         <div class="editor-container">
-          <h2>Schema A</h2>
+          <h2>Expected</h2>
           <textarea id="schemaA" spellcheck="false">
 z.object({
-  name: z.string(),
-  age: z.number()
+  name: z.string()
 })</textarea
           >
         </div>
         <div class="editor-container">
-          <h2>Schema B</h2>
+          <h2>Provided</h2>
           <textarea id="schemaB" spellcheck="false">
 z.object({
   name: z.string(),
-  age: z.string()
+  other: z.number()
 })</textarea
           >
         </div>
@@ -34,13 +56,41 @@ z.object({
         <button id="compareBtn">Compare</button>
       </div>
       <div class="results">
-        <div class="result-item">
-          <strong>isSameType:</strong> <span id="isSameTypeResult">-</span>
+        <div class="result-grid">
+          <div class="result-item">
+            <strong>isSameType(expected, provided):</strong>
+            <span id="isSameTypeResult">-</span>
+          </div>
+          <div class="result-item">
+            <strong>isCompatibleType(expected, provided):</strong>
+            <span id="isCompatibleTypeResult">-</span>
+            <span class="result-hint">provided &lt;= expected</span>
+          </div>
         </div>
-        <div class="result-item" style="display: none">
-          <strong>isCompatibleType:</strong>
-          <span id="isCompatibleTypeResult">-</span>
+
+        <div class="debug-tabs" role="tablist" aria-label="Debug output">
+          <button
+            id="sameTab"
+            class="debug-tab active"
+            type="button"
+            role="tab"
+            aria-selected="true"
+            data-debug-target="same"
+          >
+            isSameType
+          </button>
+          <button
+            id="compatibleTab"
+            class="debug-tab"
+            type="button"
+            role="tab"
+            aria-selected="false"
+            data-debug-target="compatible"
+          >
+            isCompatibleType
+          </button>
         </div>
+
         <div id="debug" class="debug-info"></div>
         <div id="error" class="error"></div>
       </div>
