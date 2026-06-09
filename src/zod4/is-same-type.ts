@@ -4,9 +4,6 @@ import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  isExactOptionalType,
-  isExclusiveUnion,
-  isLooseRecord,
   isSimpleType,
   isZodType,
   isZodTypes,
@@ -135,12 +132,6 @@ export const isSameTypePresetRules = [
         if (defA.type !== defB.type) {
           return false;
         }
-        if (
-          defA.type === "optional" &&
-          isExactOptionalType(a) !== isExactOptionalType(b)
-        ) {
-          return false;
-        }
         const innerA = defA.innerType;
         const innerB = defB.innerType;
         if (!isZodType(innerA) || !isZodType(innerB)) {
@@ -200,9 +191,6 @@ export const isSameTypePresetRules = [
       const aType = a._zod.def.type;
       const bType = b._zod.def.type;
       if (aType === "record" && bType === "record") {
-        if (isLooseRecord(a) !== isLooseRecord(b)) {
-          return false;
-        }
         return (
           recheck(a._zod.def.keyType, b._zod.def.keyType) &&
           recheck(a._zod.def.valueType, b._zod.def.valueType)
@@ -338,11 +326,6 @@ export const isSameTypePresetRules = [
       const aType = a._zod.def.type;
       const bType = b._zod.def.type;
       if (aType === "union" && bType === "union") {
-        if (
-          isExclusiveUnion(a as $ZodUnion) !== isExclusiveUnion(b as $ZodUnion)
-        ) {
-          return false;
-        }
         const aOpts = flatUnwrapUnion(a as $ZodUnion);
         const bOpts = flatUnwrapUnion(b as $ZodUnion);
         // Set-like equality (ignore duplicates): A ⊆ B and B ⊆ A

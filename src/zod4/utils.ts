@@ -115,43 +115,15 @@ export const isSimpleType = (
   );
 };
 
-type DefWithInclusive = {
-  inclusive?: boolean;
-};
-
-type DefWithMode = {
-  mode?: string;
-};
-
-export const isExactOptionalType = (schema: $ZodType): boolean => {
-  return schema._zod.traits?.has("$ZodExactOptional") ?? false;
-};
-
-export const isExclusiveUnion = <
-  Options extends readonly SomeType[] = readonly SomeType[],
->(
-  schema: $ZodUnion<Options>,
-): boolean => {
-  const def = schema._zod.def as typeof schema._zod.def & DefWithInclusive;
-  return def.inclusive === false;
-};
-
-export const isLooseRecord = (schema: $ZodTypes): boolean => {
-  const def = schema._zod.def as $ZodTypes["_zod"]["def"] & DefWithMode;
-  return def.type === "record" && def.mode === "loose";
-};
-
 export const flatUnwrapUnion = <
   Options extends readonly SomeType[] = readonly $ZodType[],
 >(
   unionType: $ZodUnion<Options>,
 ): Options => {
-  const exclusive = isExclusiveUnion(unionType);
   return unionType._zod.def.options.flatMap((x) => {
     if (
       x._zod.def.type === "union" &&
-      Array.isArray((x as $ZodUnion)._zod.def.options) &&
-      isExclusiveUnion(x as $ZodUnion) === exclusive
+      Array.isArray((x as $ZodUnion)._zod.def.options)
     ) {
       return flatUnwrapUnion(x as $ZodUnion);
     }

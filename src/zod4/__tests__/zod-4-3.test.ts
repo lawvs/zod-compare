@@ -4,38 +4,46 @@ import { isCompatibleType } from "../is-compatible-type.ts";
 import { isSameType } from "../is-same-type.ts";
 
 describe("zod 4.3 support", () => {
-  test("compares z.xor as an exclusive union", () => {
+  test("relaxes z.xor exclusivity in default comparisons", () => {
     const xorStringNumber = z.xor([z.string(), z.number()]);
     const xorNumberString = z.xor([z.number(), z.string()]);
     const inclusiveUnion = z.union([z.string(), z.number()]);
+    const nestedXorUnion = z.union([
+      z.string(),
+      z.xor([z.number(), z.boolean()]),
+    ]);
+    const flatInclusiveUnion = z.union([z.string(), z.number(), z.boolean()]);
 
     expect(isSameType(xorStringNumber, xorNumberString)).toBe(true);
-    expect(isSameType(xorStringNumber, inclusiveUnion)).toBe(false);
+    expect(isSameType(xorStringNumber, inclusiveUnion)).toBe(true);
+    expect(isSameType(nestedXorUnion, flatInclusiveUnion)).toBe(true);
 
     expect(isCompatibleType(inclusiveUnion, xorStringNumber)).toBe(true);
     expect(isCompatibleType(xorStringNumber, inclusiveUnion)).toBe(true);
     expect(isCompatibleType(xorStringNumber, z.string())).toBe(true);
+    expect(isCompatibleType(flatInclusiveUnion, nestedXorUnion)).toBe(true);
+    expect(isCompatibleType(nestedXorUnion, flatInclusiveUnion)).toBe(true);
   });
 
-  test("compares z.looseRecord separately from z.record", () => {
+  test("relaxes z.looseRecord mode in default comparisons", () => {
     const looseRecord = z.looseRecord(z.enum(["a", "b"]), z.string());
     const sameLooseRecord = z.looseRecord(z.enum(["b", "a"]), z.string());
     const exhaustiveRecord = z.record(z.enum(["a", "b"]), z.string());
 
     expect(isSameType(looseRecord, sameLooseRecord)).toBe(true);
-    expect(isSameType(looseRecord, exhaustiveRecord)).toBe(false);
+    expect(isSameType(looseRecord, exhaustiveRecord)).toBe(true);
 
     expect(isCompatibleType(looseRecord, exhaustiveRecord)).toBe(true);
     expect(isCompatibleType(exhaustiveRecord, looseRecord)).toBe(true);
   });
 
-  test("compares exact optionals separately while relaxing compatibility", () => {
+  test("relaxes exact optionals in default comparisons", () => {
     const exactOptional = z.string().exactOptional();
     const sameExactOptional = z.string().exactOptional();
     const regularOptional = z.string().optional();
 
     expect(isSameType(exactOptional, sameExactOptional)).toBe(true);
-    expect(isSameType(exactOptional, regularOptional)).toBe(false);
+    expect(isSameType(exactOptional, regularOptional)).toBe(true);
 
     expect(isCompatibleType(regularOptional, exactOptional)).toBe(true);
     expect(isCompatibleType(exactOptional, regularOptional)).toBe(true);
