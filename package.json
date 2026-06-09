@@ -51,7 +51,7 @@
   },
   "packageManager": "pnpm@10.17.1",
   "engines": {
-    "node": ">=20"
+    "node": ">=24"
   },
   "prettier": {},
   "publishConfig": {
