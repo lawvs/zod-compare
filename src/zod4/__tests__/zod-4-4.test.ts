@@ -26,6 +26,27 @@ describe("zod 4.4 support", () => {
     expect(isCompatibleType(emptyXor, z.string())).toBe(false);
   });
 
+  test("treats nested empty union and empty xor as never", () => {
+    const nestedEmptyUnion = z.union([z.union([])]);
+    const nestedEmptyXor = z.union([z.xor([])]);
+    const nestedEmptyOrString = z.union([z.union([]), z.string()]);
+
+    expectTypeOf<z.infer<typeof nestedEmptyUnion>>().toEqualTypeOf<never>();
+    expectTypeOf<z.infer<typeof nestedEmptyXor>>().toEqualTypeOf<never>();
+
+    expect(isSameType(nestedEmptyUnion, z.never())).toBe(true);
+    expect(isSameType(nestedEmptyXor, z.never())).toBe(true);
+    expect(isSameType(z.never(), nestedEmptyUnion)).toBe(true);
+    expect(isSameType(z.never(), nestedEmptyXor)).toBe(true);
+    expect(isSameType(nestedEmptyOrString, z.never())).toBe(false);
+    expect(isSameType(z.never(), nestedEmptyOrString)).toBe(false);
+
+    expect(isCompatibleType(z.string(), nestedEmptyUnion)).toBe(true);
+    expect(isCompatibleType(z.string(), nestedEmptyXor)).toBe(true);
+    expect(isCompatibleType(nestedEmptyUnion, z.string())).toBe(false);
+    expect(isCompatibleType(nestedEmptyXor, z.string())).toBe(false);
+  });
+
   test("keeps z.undefined object properties required", () => {
     const expected = z.object({
       value: z.undefined(),
