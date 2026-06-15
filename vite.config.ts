@@ -21,7 +21,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      // TODO: enable bundleTypes after API Extractor compatibility is confirmed.
+      bundleTypes: true,
       include: ["src/**/*.ts", "src/**/*.d.ts"],
       exclude: ["src/**/__tests__/*"],
     }),
