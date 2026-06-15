@@ -1,7 +1,7 @@
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import dts from "unplugin-dts/vite";
 import { defineConfig } from "vite";
-import dts from "vite-plugin-dts";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -21,8 +21,7 @@ export default defineConfig({
   },
   plugins: [
     dts({
-      // TODO fix it https://github.com/qmhc/vite-plugin-dts/issues/399
-      // rollupTypes: true,
+      // TODO: enable bundleTypes after API Extractor compatibility is confirmed.
       include: ["src/**/*.ts", "src/**/*.d.ts"],
       exclude: ["src/**/__tests__/*"],
     }),
