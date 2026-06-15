@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  unplugin-dts@1.0.2:
+    hash: 726b2624c962a2b27e9e1cf1ed00307d8945ba35ee845e9c4470f29affb26f59
+    path: patches/unplugin-dts@1.0.2.patch
+
 importers:
 
   .:
@@ -25,7 +30,7 @@ importers:
         version: 6.0.3
       unplugin-dts:
         specifier: ^1.0.2
-        version: 1.0.2(esbuild@0.27.2)(rolldown@1.0.3)(rollup@4.55.2)(typescript@6.0.3)(vite@8.0.16(@types/node@24.5.2)(esbuild@0.27.2))
+        version: 1.0.2(patch_hash=726b2624c962a2b27e9e1cf1ed00307d8945ba35ee845e9c4470f29affb26f59)(esbuild@0.27.2)(rolldown@1.0.3)(rollup@4.55.2)(typescript@6.0.3)(vite@8.0.16(@types/node@24.5.2)(esbuild@0.27.2))
       vite:
         specifier: ^8.0.3
         version: 8.0.16(@types/node@24.5.2)(esbuild@0.27.2)
@@ -2765,7 +2770,7 @@ snapshots:
 
   universalify@0.1.2: {}
 
-  unplugin-dts@1.0.2(esbuild@0.27.2)(rolldown@1.0.3)(rollup@4.55.2)(typescript@6.0.3)(vite@8.0.16(@types/node@24.5.2)(esbuild@0.27.2)):
+  unplugin-dts@1.0.2(patch_hash=726b2624c962a2b27e9e1cf1ed00307d8945ba35ee845e9c4470f29affb26f59)(esbuild@0.27.2)(rolldown@1.0.3)(rollup@4.55.2)(typescript@6.0.3)(vite@8.0.16(@types/node@24.5.2)(esbuild@0.27.2)):
     dependencies:
       '@rollup/pluginutils': 5.4.0(rollup@4.55.2)
       '@volar/typescript': 2.4.28

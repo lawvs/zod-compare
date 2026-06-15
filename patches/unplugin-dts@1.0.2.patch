@@ -1,0 +1,40 @@
+diff --git a/dist/shared/unplugin-dts.CpHGZJg0.cjs b/dist/shared/unplugin-dts.CpHGZJg0.cjs
+index f6d541254cbc32565755d8b0b1f8b178329c0b85..2f2c019f01a5fc56e89371c921b79188354a7ee7 100644
+--- a/dist/shared/unplugin-dts.CpHGZJg0.cjs
++++ b/dist/shared/unplugin-dts.CpHGZJg0.cjs
+@@ -1115,11 +1115,11 @@ class Runtime {
+     const maybeEmitted = (sourceFile) => {
+       return !(compilerOptions.noEmitForJsFiles && jsRE.test(sourceFile.fileName)) && !sourceFile.isDeclarationFile && !program.isSourceFileFromExternalLibrary(sourceFile);
+     };
+-    let publicRoot = compilerOptions.rootDir ? ensureAbsolute(resolveConfigDir(compilerOptions.rootDir, root), root) : compilerOptions.composite && compilerOptions.configFilePath ? node_path.dirname(compilerOptions.configFilePath) : queryPublicPath(
+-      program.getSourceFiles().filter(maybeEmitted).map((sourceFile) => sourceFile.fileName)
+-    ) || (configPath ? node_path.dirname(configPath) : root);
++    const emittableSourceFiles = program.getSourceFiles().filter(maybeEmitted).map((sourceFile) => sourceFile.fileName);
++    const sourcePublicPath = queryPublicPath(emittableSourceFiles);
++    let publicRoot = compilerOptions.rootDir ? ensureAbsolute(resolveConfigDir(compilerOptions.rootDir, root), root) : compilerOptions.composite && compilerOptions.configFilePath ? node_path.dirname(compilerOptions.configFilePath) : compareVersions.compare(ts.version, "6.0.0", ">=") && configPath ? node_path.dirname(configPath) : sourcePublicPath || (configPath ? node_path.dirname(configPath) : root);
+     publicRoot = normalizePath(publicRoot);
+-    let entryRoot = options.entryRoot || publicRoot;
++    let entryRoot = options.entryRoot || sourcePublicPath || publicRoot;
+     entryRoot = ensureAbsolute(entryRoot, root);
+     const diagnostics = [
+       ...program.getDeclarationDiagnostics(),
+diff --git a/dist/shared/unplugin-dts.DT1hQJb9.mjs b/dist/shared/unplugin-dts.DT1hQJb9.mjs
+index cd9f6cfb7b18a41e946c620c0778f2676d03c5b9..23ec3f89162a2aa11e9a87bce49a172041d9bbdd 100644
+--- a/dist/shared/unplugin-dts.DT1hQJb9.mjs
++++ b/dist/shared/unplugin-dts.DT1hQJb9.mjs
+@@ -1113,11 +1113,11 @@ class Runtime {
+     const maybeEmitted = (sourceFile) => {
+       return !(compilerOptions.noEmitForJsFiles && jsRE.test(sourceFile.fileName)) && !sourceFile.isDeclarationFile && !program.isSourceFileFromExternalLibrary(sourceFile);
+     };
+-    let publicRoot = compilerOptions.rootDir ? ensureAbsolute(resolveConfigDir(compilerOptions.rootDir, root), root) : compilerOptions.composite && compilerOptions.configFilePath ? dirname(compilerOptions.configFilePath) : queryPublicPath(
+-      program.getSourceFiles().filter(maybeEmitted).map((sourceFile) => sourceFile.fileName)
+-    ) || (configPath ? dirname(configPath) : root);
++    const emittableSourceFiles = program.getSourceFiles().filter(maybeEmitted).map((sourceFile) => sourceFile.fileName);
++    const sourcePublicPath = queryPublicPath(emittableSourceFiles);
++    let publicRoot = compilerOptions.rootDir ? ensureAbsolute(resolveConfigDir(compilerOptions.rootDir, root), root) : compilerOptions.composite && compilerOptions.configFilePath ? dirname(compilerOptions.configFilePath) : compare(ts.version, "6.0.0", ">=") && configPath ? dirname(configPath) : sourcePublicPath || (configPath ? dirname(configPath) : root);
+     publicRoot = normalizePath(publicRoot);
+-    let entryRoot = options.entryRoot || publicRoot;
++    let entryRoot = options.entryRoot || sourcePublicPath || publicRoot;
+     entryRoot = ensureAbsolute(entryRoot, root);
+     const diagnostics = [
+       ...program.getDeclarationDiagnostics(),
