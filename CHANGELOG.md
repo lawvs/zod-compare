@@ -1,5 +1,17 @@
 # zod-compare
 
+## 3.2.0
+
+### Minor Changes
+
+- [#116](https://github.com/lawvs/zod-compare/pull/116) [`56bc2cf`](https://github.com/lawvs/zod-compare/commit/56bc2cf2644f68773b0df13996b8c4b72ab90f4d) Thanks [@lawvs](https://github.com/lawvs)! - Add comparison support for Zod 4.3 and 4.4 schema updates.
+
+  Zod 4.3 support covers schema variants including `z.xor()`, `z.looseRecord()`, and `.exactOptional()`. Zod 4.4 support treats empty `z.union([])` and `z.xor([])` schemas, including nested empty unions, as `never` for TypeScript-level same-type and compatibility checks. It also keeps `z.undefined()` object properties required and clarifies runtime-only comparison warnings while leaving strict runtime behavior to custom rules.
+
+### Patch Changes
+
+- [`c9d3c0b`](https://github.com/lawvs/zod-compare/commit/c9d3c0b2c85df83aa76ae1431560ee2be8e574c8) Thanks [@lawvs](https://github.com/lawvs)! - Fix TypeScript 6 declaration output so published packages include `dist/index.d.ts` instead of only `dist/src/index.d.ts`.
+
 ## 3.1.0
 
 ### Minor Changes
