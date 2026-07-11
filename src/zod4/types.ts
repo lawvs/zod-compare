@@ -6,7 +6,8 @@ export type CompareContext = {
     target: [a: $ZodTypes, b: $ZodTypes];
     result: boolean;
   }[];
-} & Record<string, unknown>;
+  [key: string]: unknown;
+};
 
 export type CompareFn = (
   a: $ZodTypes,
