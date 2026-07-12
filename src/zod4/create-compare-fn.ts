@@ -5,8 +5,8 @@ import { type CompareContext, type CompareRule } from "./types.ts";
 
 export const createCompareFn = (rules: CompareRule[]) => {
   const isSameTypeFn = (
-    left: $ZodType | LegacyZodFunction,
-    right: $ZodType | LegacyZodFunction,
+    left: Readonly<$ZodType | LegacyZodFunction>,
+    right: Readonly<$ZodType | LegacyZodFunction>,
     context: CompareContext = {},
   ): boolean => {
     let prevIndex = -1;
