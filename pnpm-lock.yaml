@@ -5,9 +5,7 @@ settings:
   excludeLinksFromLockfile: false
 
 patchedDependencies:
-  unplugin-dts@1.0.2:
-    hash: 726b2624c962a2b27e9e1cf1ed00307d8945ba35ee845e9c4470f29affb26f59
-    path: patches/unplugin-dts@1.0.2.patch
+  unplugin-dts@1.0.2: 726b2624c962a2b27e9e1cf1ed00307d8945ba35ee845e9c4470f29affb26f59
 
 importers:
 

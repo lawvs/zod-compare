@@ -1,2 +1,5 @@
+allowBuilds:
+  esbuild: false
+ignoreWorkspaceRootCheck: true
 patchedDependencies:
   unplugin-dts@1.0.2: patches/unplugin-dts@1.0.2.patch
