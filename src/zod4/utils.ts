@@ -118,6 +118,15 @@ export const isSimpleType = (
 export const isNeverLikeType = (schema: $ZodTypes): boolean => {
   const def = schema._zod.def;
   if (def.type === "never") return true;
+  if (def.type === "readonly") {
+    return isZodTypes(def.innerType) && isNeverLikeType(def.innerType);
+  }
+  if (def.type === "intersection") {
+    return (
+      (isZodTypes(def.left) && isNeverLikeType(def.left)) ||
+      (isZodTypes(def.right) && isNeverLikeType(def.right))
+    );
+  }
   if (def.type !== "union") return false;
 
   const options = flatUnwrapUnion(schema as $ZodUnion);

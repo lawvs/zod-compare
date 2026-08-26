@@ -1,4 +1,4 @@
-import type { $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
+import type { $ZodObject, $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
@@ -143,6 +143,80 @@ const getFiniteLiteralValues = (
   }
   return undefined;
 };
+
+const flatUnwrapIntersection = (schema: $ZodTypes): $ZodTypes[] => {
+  const def = schema._zod.def;
+  if (def.type !== "intersection") return [schema];
+  if (!isZodTypes(def.left) || !isZodTypes(def.right)) return [];
+  return [
+    ...flatUnwrapIntersection(def.left),
+    ...flatUnwrapIntersection(def.right),
+  ];
+};
+
+const getReadonlyObjectType = (schema: $ZodTypes): $ZodObject | undefined => {
+  const def = schema._zod.def;
+  if (def.type === "object") return schema as $ZodObject;
+  if (def.type !== "readonly") return undefined;
+  const innerType = getInnerType(schema);
+  return innerType ? getReadonlyObjectType(innerType) : undefined;
+};
+
+const objectAcceptsIntersection = (
+  expectedType: $ZodObject,
+  providedType: $ZodTypes,
+  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
+): boolean => {
+  const expectedShape = expectedType._zod.def.shape;
+  const providedParts = flatUnwrapIntersection(providedType);
+  const providedObjects: $ZodObject[] = [];
+  for (const part of providedParts) {
+    const objectType = getReadonlyObjectType(part);
+    if (objectType) providedObjects.push(objectType);
+  }
+  const providedShapes = providedObjects.map(
+    (objectType) => objectType._zod.def.shape,
+  );
+
+  if (providedShapes.length === 0) return false;
+
+  let hasMatchingKey = false;
+  for (const key in expectedShape) {
+    const candidates = providedShapes.flatMap((shape) =>
+      key in shape ? [shape[key]] : [],
+    );
+    if (candidates.length === 0) {
+      if (schemaAllowsMissingObjectKey(expectedShape[key])) continue;
+      return false;
+    }
+    hasMatchingKey = true;
+    if (
+      !candidates.some((candidate) => recheck(expectedShape[key], candidate))
+    ) {
+      return false;
+    }
+  }
+
+  const expectedKeys = Object.keys(expectedShape);
+  const providedKeyCount = providedShapes.reduce(
+    (count, shape) => count + Object.keys(shape).length,
+    0,
+  );
+  if (expectedKeys.length > 0 && !hasMatchingKey) {
+    return (
+      providedKeyCount === 0 && providedObjects.length === providedParts.length
+    );
+  }
+
+  return true;
+};
+
+const readonlyContainerKinds = new Set<string>([
+  "array",
+  "tuple",
+  "map",
+  "set",
+]);
 
 const recordKeysAreCompatible = (
   expectedKeyType: $ZodType,
@@ -312,6 +386,77 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
           recheck(expectedType, providedOption),
         );
       }
+      return next();
+    },
+  },
+  {
+    name: "check promise covariance",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      const providedDef = providedType._zod.def;
+      if (expectedDef.type === "promise" && providedDef.type === "promise") {
+        return recheck(expectedDef.innerType, providedDef.innerType);
+      }
+      return next();
+    },
+  },
+  {
+    name: "check readonly assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      const providedDef = providedType._zod.def;
+
+      if (expectedDef.type === "intersection") return next();
+
+      if (expectedDef.type === "readonly") {
+        const expectedInner = getInnerType(expectedType);
+        const providedInner =
+          providedDef.type === "readonly"
+            ? getInnerType(providedType)
+            : providedType;
+        if (!expectedInner || !providedInner) return false;
+        return recheck(expectedInner, providedInner);
+      }
+
+      if (providedDef.type === "readonly") {
+        const providedInner = getInnerType(providedType);
+        if (!providedInner) return false;
+        if (readonlyContainerKinds.has(expectedDef.type)) {
+          return false;
+        }
+        return recheck(expectedType, providedInner);
+      }
+
+      return next();
+    },
+  },
+  {
+    name: "check intersection assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      const providedDef = providedType._zod.def;
+
+      if (expectedDef.type === "intersection") {
+        return (
+          recheck(expectedDef.left, providedType) &&
+          recheck(expectedDef.right, providedType)
+        );
+      }
+
+      if (providedDef.type === "intersection") {
+        if (expectedDef.type === "object") {
+          return objectAcceptsIntersection(
+            expectedType as $ZodObject,
+            providedType,
+            recheck,
+          );
+        }
+        return (
+          recheck(expectedType, providedDef.left) ||
+          recheck(expectedType, providedDef.right)
+        );
+      }
+
       return next();
     },
   },
