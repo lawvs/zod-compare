@@ -176,12 +176,6 @@ providedType)` should return `true` for the supported Zod schema kinds.
 Zod 4 brands are type-only, so branded schemas compare like their underlying
 runtime schema.
 
-Zod also represents both the default `z.function()` parameter type (`never[]`
-at the type level) and an explicit `z.array(z.unknown())` input with the same
-runtime definition. Comparisons between separate function schemas with this
-ambiguous input return `false` conservatively; comparing the same schema
-reference still returns `true`.
-
 ### Preset Rules
 
 You can use the preset rules `isSameTypePresetRules` and `isCompatibleTypePresetRules` to create custom comparison functions.
