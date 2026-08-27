@@ -2,4 +2,4 @@
 "zod-compare": patch
 ---
 
-Fix `isCompatibleType` assignability for promise, readonly, and intersection schemas.
+Stabilize `isCompatibleType` and fix assignability for function, promise, readonly, and intersection schemas.

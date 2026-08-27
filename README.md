@@ -131,7 +131,7 @@ const isSameType = createCompareFn(isSameTypePresetRules);
 const isCompatibleType = createCompareFn(isCompatibleTypePresetRules);
 ```
 
-### `isCompatibleType` (Experimental API)
+### `isCompatibleType`
 
 Compares two Zod schemas and returns `true` if they are compatible.
 
@@ -175,6 +175,12 @@ providedType)` should return `true` for the supported Zod schema kinds.
 `isCompatibleType` can only compare schema information available at runtime.
 Zod 4 brands are type-only, so branded schemas compare like their underlying
 runtime schema.
+
+Zod also represents both the default `z.function()` parameter type (`never[]`
+at the type level) and an explicit `z.array(z.unknown())` input with the same
+runtime definition. Comparisons between separate function schemas with this
+ambiguous input return `false` conservatively; comparing the same schema
+reference still returns `true`.
 
 ### Preset Rules
 

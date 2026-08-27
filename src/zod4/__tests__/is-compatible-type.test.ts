@@ -77,6 +77,176 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(provided, expected)).toBe(false);
   });
 
+  test("compares function parameters contravariantly and returns covariantly", () => {
+    const expected = z.function({
+      input: [z.literal("value")],
+      output: z.string(),
+    });
+    const provided = z.function({
+      input: [z.string()],
+      output: z.literal("value"),
+    });
+
+    expectTypeOf<z.infer<typeof provided>>().toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().not.toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(true);
+    expect(isCompatibleType(provided, expected)).toBe(false);
+  });
+
+  test("allows a provided function to return a value when void is expected", () => {
+    const expected = z.function({ input: [], output: z.void() });
+    const provided = z.function({ input: [], output: z.string() });
+
+    expectTypeOf<z.infer<typeof provided>>().toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().not.toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(true);
+    expect(isCompatibleType(provided, expected)).toBe(false);
+  });
+
+  test("allows a provided function to ignore trailing parameters", () => {
+    const expected = z.function({
+      input: [z.string(), z.number()],
+      output: z.string(),
+    });
+    const provided = z.function({
+      input: [z.string()],
+      output: z.string(),
+    });
+
+    expectTypeOf<z.infer<typeof provided>>().toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().not.toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(true);
+    expect(isCompatibleType(provided, expected)).toBe(false);
+  });
+
+  test("compares function parameter input types instead of parsed outputs", () => {
+    const expected = z.function({
+      input: [z.coerce.number()],
+      output: z.string(),
+    });
+    const provided = z.function({
+      input: [z.number()],
+      output: z.string(),
+    });
+
+    expectTypeOf<z.infer<typeof provided>>().not.toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(false);
+    expect(isCompatibleType(provided, expected)).toBe(true);
+  });
+
+  test("compares variadic function parameter input types", () => {
+    const expected = z.function({
+      input: z.array(z.coerce.number()),
+      output: z.string(),
+    });
+    const provided = z.function({
+      input: z.array(z.number()),
+      output: z.string(),
+    });
+
+    expectTypeOf<z.infer<typeof provided>>().not.toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(false);
+    expect(isCompatibleType(provided, expected)).toBe(true);
+  });
+
+  test("compares fixed and variadic function parameters", () => {
+    const expected = z.function({
+      input: [z.literal("first"), z.literal("second")],
+      output: z.string(),
+    });
+    const provided = z.function({
+      input: z.array(z.string()),
+      output: z.literal("value"),
+    });
+
+    expectTypeOf<z.infer<typeof provided>>().toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().not.toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(true);
+    expect(isCompatibleType(provided, expected)).toBe(false);
+  });
+
+  test("compares optional and rest function parameters", () => {
+    const expectedOptional = z.function({
+      input: [z.literal("value"), z.literal(1).optional()],
+      output: z.string(),
+    });
+    const providedOptional = z.function({
+      input: [z.string(), z.number().optional()],
+      output: z.literal("value"),
+    });
+    const expectedRest = z.function({
+      input: z.tuple([z.literal("value")]).rest(z.literal(1)),
+      output: z.string(),
+    });
+    const providedRest = z.function({
+      input: z.tuple([z.string()]).rest(z.number()),
+      output: z.literal("value"),
+    });
+
+    expectTypeOf<z.infer<typeof providedOptional>>().toExtend<
+      z.infer<typeof expectedOptional>
+    >();
+    expectTypeOf<z.infer<typeof expectedOptional>>().not.toExtend<
+      z.infer<typeof providedOptional>
+    >();
+    expectTypeOf<z.infer<typeof providedRest>>().toExtend<
+      z.infer<typeof expectedRest>
+    >();
+    expectTypeOf<z.infer<typeof expectedRest>>().not.toExtend<
+      z.infer<typeof providedRest>
+    >();
+
+    expect(isCompatibleType(expectedOptional, providedOptional)).toBe(true);
+    expect(isCompatibleType(providedOptional, expectedOptional)).toBe(false);
+    expect(isCompatibleType(expectedRest, providedRest)).toBe(true);
+    expect(isCompatibleType(providedRest, expectedRest)).toBe(false);
+  });
+
+  test("does not confuse default function parameters with explicit unknown parameters", () => {
+    const expected = z.function({
+      input: z.array(z.unknown()),
+      output: z.unknown(),
+    });
+    const provided = z.function();
+
+    expectTypeOf<z.infer<typeof provided>>().not.toExtend<
+      z.infer<typeof expected>
+    >();
+    expect(isCompatibleType(expected, provided)).toBe(false);
+  });
+
   test("compares TypeScript top, bottom, and any-like schemas", () => {
     expect(isCompatibleType(z.unknown(), z.string())).toBe(true);
     expect(isCompatibleType(z.string(), z.unknown())).toBe(false);

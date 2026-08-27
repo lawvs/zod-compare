@@ -1,4 +1,5 @@
 import type { $ZodObject, $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
+import { isLegacyZodFunction } from "./compat.ts";
 import { createCompareFn } from "./create-compare-fn.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
@@ -218,6 +219,188 @@ const readonlyContainerKinds = new Set<string>([
   "set",
 ]);
 
+const getRequiredTupleInputCount = (items: readonly $ZodType[]): number => {
+  let requiredCount = items.length;
+  while (
+    requiredCount > 0 &&
+    items[requiredCount - 1]._zod.optin === "optional"
+  ) {
+    requiredCount--;
+  }
+  return requiredCount;
+};
+
+const schemaHasUnknownInput = (schema: $ZodTypes): boolean => {
+  const def = schema._zod.def;
+  return def.type === "unknown" || ("coerce" in def && def.coerce === true);
+};
+
+const functionParameterIsCompatible = (
+  expectedParameter: $ZodType,
+  providedParameter: $ZodType,
+  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
+): boolean => {
+  if (expectedParameter === providedParameter) return true;
+  if (!isZodTypes(expectedParameter) || !isZodTypes(providedParameter)) {
+    return false;
+  }
+
+  const expectedAcceptsUnknown = schemaHasUnknownInput(expectedParameter);
+  const providedAcceptsUnknown = schemaHasUnknownInput(providedParameter);
+  if (providedAcceptsUnknown) return true;
+  if (expectedAcceptsUnknown) {
+    return providedParameter._zod.def.type === "any";
+  }
+
+  return recheck(providedParameter, expectedParameter);
+};
+
+const functionInputsAreCompatible = (
+  expectedInput: $ZodType,
+  providedInput: $ZodType,
+  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
+): boolean => {
+  if (!isZodTypes(expectedInput) || !isZodTypes(providedInput)) return false;
+  const expectedDef = expectedInput._zod.def;
+  const providedDef = providedInput._zod.def;
+
+  if (expectedDef.type === "array" && providedDef.type === "array") {
+    return functionParameterIsCompatible(
+      expectedDef.element,
+      providedDef.element,
+      recheck,
+    );
+  }
+
+  if (expectedDef.type === "tuple" && providedDef.type === "array") {
+    return (
+      expectedDef.items.every((item) =>
+        functionParameterIsCompatible(item, providedDef.element, recheck),
+      ) &&
+      (!expectedDef.rest ||
+        functionParameterIsCompatible(
+          expectedDef.rest,
+          providedDef.element,
+          recheck,
+        ))
+    );
+  }
+
+  if (expectedDef.type === "array" && providedDef.type === "tuple") {
+    if (getRequiredTupleInputCount(providedDef.items) > 0) return false;
+    return (
+      providedDef.items.every((item) =>
+        functionParameterIsCompatible(expectedDef.element, item, recheck),
+      ) &&
+      (!providedDef.rest ||
+        functionParameterIsCompatible(
+          expectedDef.element,
+          providedDef.rest,
+          recheck,
+        ))
+    );
+  }
+
+  if (expectedDef.type !== "tuple" || providedDef.type !== "tuple") {
+    // Function inputs may be custom schemas whose inferred input cannot be
+    // recovered from runtime metadata. Be conservative instead of comparing
+    // their parsed output types.
+    return expectedInput === providedInput;
+  }
+
+  const expectedItems = expectedDef.items;
+  const providedItems = providedDef.items;
+  if (
+    getRequiredTupleInputCount(providedItems) >
+    getRequiredTupleInputCount(expectedItems)
+  ) {
+    return false;
+  }
+
+  for (let index = 0; index < providedItems.length; index++) {
+    const expectedItem = expectedItems[index] ?? expectedDef.rest;
+    if (
+      expectedItem &&
+      !functionParameterIsCompatible(
+        expectedItem,
+        providedItems[index],
+        recheck,
+      )
+    ) {
+      return false;
+    }
+  }
+
+  if (providedDef.rest) {
+    for (
+      let index = providedItems.length;
+      index < expectedItems.length;
+      index++
+    ) {
+      if (
+        !functionParameterIsCompatible(
+          expectedItems[index],
+          providedDef.rest,
+          recheck,
+        )
+      ) {
+        return false;
+      }
+    }
+    if (
+      expectedDef.rest &&
+      !functionParameterIsCompatible(
+        expectedDef.rest,
+        providedDef.rest,
+        recheck,
+      )
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const functionOutputsAreCompatible = (
+  expectedOutput: $ZodType,
+  providedOutput: $ZodType,
+  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
+): boolean => {
+  // TypeScript intentionally discards a returned value when the contextual
+  // function type returns void. This is specific to function assignability;
+  // string itself is not assignable to void.
+  if (isZodTypes(expectedOutput) && expectedOutput._zod.def.type === "void") {
+    return true;
+  }
+  return recheck(expectedOutput, providedOutput);
+};
+
+const getFunctionDef = (
+  schema: unknown,
+): { input: $ZodType; output: $ZodType } | undefined => {
+  if (isLegacyZodFunction(schema)) {
+    const def =
+      (schema as { def?: unknown; _def?: unknown }).def ??
+      (schema as { _def?: unknown })._def;
+    if (!def || typeof def !== "object") return undefined;
+    return def as { input: $ZodType; output: $ZodType };
+  }
+  if (!isZodType(schema) || !isZodTypes(schema)) return undefined;
+  const def = schema._zod.def;
+  return def.type === "function" ? def : undefined;
+};
+
+const hasErasedDefaultFunctionInput = (input: $ZodType): boolean => {
+  if (!isZodTypes(input)) return false;
+  const def = input._zod.def;
+  return (
+    def.type === "array" &&
+    isZodTypes(def.element) &&
+    def.element._zod.def.type === "unknown"
+  );
+};
+
 const recordKeysAreCompatible = (
   expectedKeyType: $ZodType,
   providedKeyType: $ZodType,
@@ -264,6 +447,41 @@ const recordKeysAreCompatible = (
 };
 
 export const isCompatibleTypePresetRules: CompareRule[] = [
+  {
+    name: "check function assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = getFunctionDef(expectedType);
+      const providedDef = getFunctionDef(providedType);
+      if (!expectedDef && !providedDef) return next();
+      if (!expectedDef || !providedDef) return next();
+      if (expectedType === providedType) return true;
+
+      // z.function() infers `never[]` parameters, but its runtime input is the
+      // same `z.array(z.unknown())` used by an explicitly configured
+      // `(...args: unknown[])` function. Since the two cannot be distinguished
+      // at runtime, reject comparisons between separate schemas conservatively.
+      // Remove this guard if Zod preserves the default generic in its def.
+      if (
+        hasErasedDefaultFunctionInput(expectedDef.input) ||
+        hasErasedDefaultFunctionInput(providedDef.input)
+      ) {
+        return false;
+      }
+
+      return (
+        functionInputsAreCompatible(
+          expectedDef.input,
+          providedDef.input,
+          recheck,
+        ) &&
+        functionOutputsAreCompatible(
+          expectedDef.output,
+          providedDef.output,
+          recheck,
+        )
+      );
+    },
+  },
   {
     name: "is same type",
     compare: (expectedType, providedType, next) => {
@@ -693,8 +911,6 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
  *
  * Returns true when `providedType <= expectedType`, i.e. every value accepted by
  * `providedType` can be used where `expectedType` is expected.
- *
- * @experimental This API is unstable and still in development.
  *
  * @param expectedType The wider/supertype schema.
  * @param providedType The narrower/subtype schema.
