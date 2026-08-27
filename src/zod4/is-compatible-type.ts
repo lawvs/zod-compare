@@ -225,7 +225,7 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
         }
 
         const providedInner = getInnerType(providedType);
-        return providedInner ? recheck(expectedInner, providedInner) : false;
+        return providedInner ? recheck(expectedType, providedInner) : false;
       }
 
       if (providedDef.type !== "readonly") {

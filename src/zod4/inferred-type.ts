@@ -9,20 +9,8 @@ import {
 export const isInferredAsNever = (schema: $ZodTypes): boolean => {
   const def = schema._zod.def;
   if (def.type === "never") return true;
-  if (
-    def.type === "default" ||
-    def.type === "prefault" ||
-    def.type === "nonoptional" ||
-    def.type === "catch" ||
-    def.type === "readonly"
-  ) {
+  if (def.type === "nonoptional" || def.type === "readonly") {
     return isZodTypes(def.innerType) && isInferredAsNever(def.innerType);
-  }
-  if (def.type === "intersection") {
-    return (
-      (isZodTypes(def.left) && isInferredAsNever(def.left)) ||
-      (isZodTypes(def.right) && isInferredAsNever(def.right))
-    );
   }
   if (def.type !== "union") return false;
 

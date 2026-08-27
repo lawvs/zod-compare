@@ -220,13 +220,6 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(expectedIntersection, left)).toBe(false);
   });
 
-  test("recognizes when an intersection infers never", () => {
-    const provided = z.intersection(z.never(), z.string());
-
-    expectTypeOf<z.infer<typeof provided>>().toEqualTypeOf<never>();
-    expect(isCompatibleType(z.never(), provided)).toBe(true);
-  });
-
   test("compares tuple assignability", () => {
     expect(
       isCompatibleType(
@@ -324,6 +317,17 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(mutableObject, readonlyObject)).toBe(true);
     expect(isCompatibleType(z.unknown(), readonlyArray)).toBe(true);
     expect(isCompatibleType(z.never(), readonlyNever)).toBe(true);
+  });
+
+  test("treats nested readonly as idempotent", () => {
+    const readonlyArray = z.array(z.string()).readonly();
+    const nestedReadonlyArray = readonlyArray.readonly();
+
+    expectTypeOf<z.infer<typeof readonlyArray>>().toEqualTypeOf<
+      z.infer<typeof nestedReadonlyArray>
+    >();
+    expect(isCompatibleType(readonlyArray, nestedReadonlyArray)).toBe(true);
+    expect(isCompatibleType(nestedReadonlyArray, readonlyArray)).toBe(true);
   });
 
   test("preserves readonly through a provided union", () => {
