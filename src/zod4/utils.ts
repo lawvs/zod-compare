@@ -115,31 +115,17 @@ export const isSimpleType = (
   );
 };
 
-export const isInferredAsNever = (schema: $ZodTypes): boolean => {
+export const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
-  if (def.type === "never") return true;
   if (
-    def.type === "default" ||
-    def.type === "prefault" ||
-    def.type === "nonoptional" ||
-    def.type === "catch" ||
-    def.type === "readonly"
+    "innerType" in def &&
+    typeof def.innerType === "object" &&
+    isZodType(def.innerType) &&
+    isZodTypes(def.innerType)
   ) {
-    return isZodTypes(def.innerType) && isInferredAsNever(def.innerType);
+    return def.innerType;
   }
-  if (def.type === "intersection") {
-    return (
-      (isZodTypes(def.left) && isInferredAsNever(def.left)) ||
-      (isZodTypes(def.right) && isInferredAsNever(def.right))
-    );
-  }
-  if (def.type !== "union") return false;
-
-  const options = flatUnwrapUnion(schema as $ZodUnion);
-  return (
-    options.length === 0 ||
-    options.every((option) => isZodTypes(option) && isInferredAsNever(option))
-  );
+  return undefined;
 };
 
 export const flatUnwrapUnion = <
@@ -156,6 +142,16 @@ export const flatUnwrapUnion = <
     }
     return x;
   }) as unknown as Options;
+};
+
+export const flatUnwrapIntersection = (schema: $ZodTypes): $ZodTypes[] => {
+  const def = schema._zod.def;
+  if (def.type !== "intersection") return [schema];
+  if (!isZodTypes(def.left) || !isZodTypes(def.right)) return [];
+  return [
+    ...flatUnwrapIntersection(def.left),
+    ...flatUnwrapIntersection(def.right),
+  ];
 };
 
 export const zodToString = (
