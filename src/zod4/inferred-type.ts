@@ -141,6 +141,13 @@ const getEnumValues = (
  *
  * These values can be compared with subset logic before falling back to broader
  * kind rules.
+ *
+ * @example
+ * ```ts
+ * getFiniteLiteralValues(z.literal("red")); // ["red"]
+ * getFiniteLiteralValues(z.enum(["red", "blue"])); // ["red", "blue"]
+ * getFiniteLiteralValues(z.string()); // undefined
+ * ```
  */
 export const getFiniteLiteralValues = (
   schema: $ZodTypes,
