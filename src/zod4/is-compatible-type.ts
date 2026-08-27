@@ -212,13 +212,6 @@ const objectAcceptsIntersection = (
   return true;
 };
 
-const readonlyContainerKinds = new Set<string>([
-  "array",
-  "tuple",
-  "map",
-  "set",
-]);
-
 const getRequiredTupleInputCount = (items: readonly $ZodType[]): number => {
   let requiredCount = items.length;
   while (
@@ -638,24 +631,33 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
 
       if (expectedDef.type === "readonly") {
         const expectedInner = getInnerType(expectedType);
-        const providedInner =
-          providedDef.type === "readonly"
-            ? getInnerType(providedType)
-            : providedType;
-        if (!expectedInner || !providedInner) return false;
-        return recheck(expectedInner, providedInner);
-      }
+        if (!expectedInner) return false;
 
-      if (providedDef.type === "readonly") {
-        const providedInner = getInnerType(providedType);
-        if (!providedInner) return false;
-        if (readonlyContainerKinds.has(expectedDef.type)) {
-          return false;
+        if (providedDef.type !== "readonly") {
+          return recheck(expectedInner, providedType);
         }
-        return recheck(expectedType, providedInner);
+
+        const providedInner = getInnerType(providedType);
+        return providedInner ? recheck(expectedInner, providedInner) : false;
       }
 
-      return next();
+      if (providedDef.type !== "readonly") {
+        return next();
+      }
+
+      const providedInner = getInnerType(providedType);
+      if (!providedInner) return false;
+
+      if (
+        expectedDef.type === "array" ||
+        expectedDef.type === "tuple" ||
+        expectedDef.type === "map" ||
+        expectedDef.type === "set"
+      ) {
+        return false;
+      }
+
+      return recheck(expectedType, providedInner);
     },
   },
   {
