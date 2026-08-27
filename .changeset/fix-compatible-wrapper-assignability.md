@@ -2,4 +2,4 @@
 "zod-compare": patch
 ---
 
-Stabilize `isCompatibleType` and fix assignability for function, promise, readonly, and intersection schemas.
+Stabilize `isCompatibleType`, fix assignability for function, promise, readonly, and intersection schemas, and recognize wrappers whose inferred output remains `never`.

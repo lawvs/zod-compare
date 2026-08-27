@@ -115,16 +115,22 @@ export const isSimpleType = (
   );
 };
 
-export const isNeverLikeType = (schema: $ZodTypes): boolean => {
+export const schemaInfersNever = (schema: $ZodTypes): boolean => {
   const def = schema._zod.def;
   if (def.type === "never") return true;
-  if (def.type === "readonly") {
-    return isZodTypes(def.innerType) && isNeverLikeType(def.innerType);
+  if (
+    def.type === "default" ||
+    def.type === "prefault" ||
+    def.type === "nonoptional" ||
+    def.type === "catch" ||
+    def.type === "readonly"
+  ) {
+    return isZodTypes(def.innerType) && schemaInfersNever(def.innerType);
   }
   if (def.type === "intersection") {
     return (
-      (isZodTypes(def.left) && isNeverLikeType(def.left)) ||
-      (isZodTypes(def.right) && isNeverLikeType(def.right))
+      (isZodTypes(def.left) && schemaInfersNever(def.left)) ||
+      (isZodTypes(def.right) && schemaInfersNever(def.right))
     );
   }
   if (def.type !== "union") return false;
@@ -132,7 +138,7 @@ export const isNeverLikeType = (schema: $ZodTypes): boolean => {
   const options = flatUnwrapUnion(schema as $ZodUnion);
   return (
     options.length === 0 ||
-    options.every((option) => isZodTypes(option) && isNeverLikeType(option))
+    options.every((option) => isZodTypes(option) && schemaInfersNever(option))
   );
 };
 

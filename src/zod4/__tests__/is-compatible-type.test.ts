@@ -428,7 +428,7 @@ describe("isCompatibleType", () => {
     expect(isCompatibleType(expected, providedWithObjectUnion)).toBe(false);
   });
 
-  test("recognizes an intersection containing never as never-like", () => {
+  test("recognizes when an intersection infers never", () => {
     const provided = z.intersection(z.never(), z.string());
 
     expectTypeOf<z.infer<typeof provided>>().toEqualTypeOf<never>();

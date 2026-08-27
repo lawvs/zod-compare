@@ -5,7 +5,7 @@ import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  isNeverLikeType,
+  schemaInfersNever,
   isZodType,
   isZodTypes,
 } from "./utils.ts";
@@ -512,12 +512,12 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     compare: (expectedType, providedType, next) => {
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
-      const expectedNeverLike = isNeverLikeType(expectedType);
-      const providedNeverLike = isNeverLikeType(providedType);
+      const expectedInfersNever = schemaInfersNever(expectedType);
+      const providedInfersNever = schemaInfersNever(providedType);
 
-      if (providedNeverLike) return true;
+      if (providedInfersNever) return true;
       if (expectedKind === "any" || expectedKind === "unknown") return true;
-      if (expectedNeverLike) return false;
+      if (expectedInfersNever) return false;
       if (providedKind === "unknown") return false;
       if (providedKind === "any") return true;
 
