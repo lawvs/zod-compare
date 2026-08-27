@@ -1,8 +1,8 @@
 import { describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod/v4";
-import { schemaInfersNever, zodToString } from "../utils.ts";
+import { isInferredAsNever, zodToString } from "../utils.ts";
 
-describe("schemaInfersNever", () => {
+describe("isInferredAsNever", () => {
   const throwNever = (): never => {
     throw new Error("unreachable");
   };
@@ -20,11 +20,11 @@ describe("schemaInfersNever", () => {
     expectTypeOf<z.infer<typeof catchNever>>().toEqualTypeOf<never>();
     expectTypeOf<z.infer<typeof readonlyNever>>().toEqualTypeOf<never>();
 
-    expect(schemaInfersNever(defaultNever)).toBe(true);
-    expect(schemaInfersNever(prefaultNever)).toBe(true);
-    expect(schemaInfersNever(nonoptionalNever)).toBe(true);
-    expect(schemaInfersNever(catchNever)).toBe(true);
-    expect(schemaInfersNever(readonlyNever)).toBe(true);
+    expect(isInferredAsNever(defaultNever)).toBe(true);
+    expect(isInferredAsNever(prefaultNever)).toBe(true);
+    expect(isInferredAsNever(nonoptionalNever)).toBe(true);
+    expect(isInferredAsNever(catchNever)).toBe(true);
+    expect(isInferredAsNever(readonlyNever)).toBe(true);
   });
 
   test("does not unwrap wrappers that add or replace output values", () => {
@@ -40,10 +40,10 @@ describe("schemaInfersNever", () => {
       Promise<never>
     >();
 
-    expect(schemaInfersNever(optionalNever)).toBe(false);
-    expect(schemaInfersNever(nullableNever)).toBe(false);
-    expect(schemaInfersNever(successNever)).toBe(false);
-    expect(schemaInfersNever(promiseNever)).toBe(false);
+    expect(isInferredAsNever(optionalNever)).toBe(false);
+    expect(isInferredAsNever(nullableNever)).toBe(false);
+    expect(isInferredAsNever(successNever)).toBe(false);
+    expect(isInferredAsNever(promiseNever)).toBe(false);
   });
 });
 

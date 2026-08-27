@@ -4,7 +4,7 @@ import { createCompareFn } from "./create-compare-fn.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  schemaInfersNever,
+  isInferredAsNever,
   isSimpleType,
   isZodType,
   isZodTypes,
@@ -104,8 +104,8 @@ export const isSameTypePresetRules = [
   {
     name: "compare never-like type",
     compare: (a, b, next) => {
-      const aInfersNever = schemaInfersNever(a);
-      const bInfersNever = schemaInfersNever(b);
+      const aInfersNever = isInferredAsNever(a);
+      const bInfersNever = isInferredAsNever(b);
       if (aInfersNever || bInfersNever) {
         return aInfersNever && bInfersNever;
       }
