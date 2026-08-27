@@ -1,4 +1,4 @@
-import type { $ZodObject, $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
+import type { $ZodType, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
 import {
   getFiniteLiteralValues,
@@ -10,69 +10,11 @@ import {
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import {
-  flatUnwrapIntersection,
   flatUnwrapUnion,
   getInnerType,
   isZodType,
   isZodTypes,
 } from "./utils.ts";
-
-const getReadonlyObjectType = (schema: $ZodTypes): $ZodObject | undefined => {
-  const def = schema._zod.def;
-  if (def.type === "object") return schema as $ZodObject;
-  if (def.type !== "readonly") return undefined;
-  const innerType = getInnerType(schema);
-  return innerType ? getReadonlyObjectType(innerType) : undefined;
-};
-
-const objectAcceptsIntersection = (
-  expectedType: $ZodObject,
-  providedType: $ZodTypes,
-  recheck: (expectedType: $ZodType, providedType: $ZodType) => boolean,
-): boolean => {
-  const expectedShape = expectedType._zod.def.shape;
-  const providedParts = flatUnwrapIntersection(providedType);
-  const providedObjects: $ZodObject[] = [];
-  for (const part of providedParts) {
-    const objectType = getReadonlyObjectType(part);
-    if (objectType) providedObjects.push(objectType);
-  }
-  const providedShapes = providedObjects.map(
-    (objectType) => objectType._zod.def.shape,
-  );
-
-  if (providedShapes.length === 0) return false;
-
-  let hasMatchingKey = false;
-  for (const key in expectedShape) {
-    const candidates = providedShapes.flatMap((shape) =>
-      key in shape ? [shape[key]] : [],
-    );
-    if (candidates.length === 0) {
-      if (schemaAllowsMissingObjectKey(expectedShape[key])) continue;
-      return false;
-    }
-    hasMatchingKey = true;
-    if (
-      !candidates.some((candidate) => recheck(expectedShape[key], candidate))
-    ) {
-      return false;
-    }
-  }
-
-  const expectedKeys = Object.keys(expectedShape);
-  const providedKeyCount = providedShapes.reduce(
-    (count, shape) => count + Object.keys(shape).length,
-    0,
-  );
-  if (expectedKeys.length > 0 && !hasMatchingKey) {
-    return (
-      providedKeyCount === 0 && providedObjects.length === providedParts.length
-    );
-  }
-
-  return true;
-};
 
 const recordKeysAreCompatible = (
   expectedKeyType: $ZodType,
@@ -304,29 +246,6 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
       }
 
       return recheck(expectedType, providedInner);
-    },
-  },
-  {
-    name: "check provided intersection assignability",
-    compare: (expectedType, providedType, next, recheck) => {
-      const expectedDef = expectedType._zod.def;
-      const providedDef = providedType._zod.def;
-
-      if (providedDef.type === "intersection") {
-        if (expectedDef.type === "object") {
-          return objectAcceptsIntersection(
-            expectedType as $ZodObject,
-            providedType,
-            recheck,
-          );
-        }
-        return (
-          recheck(expectedType, providedDef.left) ||
-          recheck(expectedType, providedDef.right)
-        );
-      }
-
-      return next();
     },
   },
   {

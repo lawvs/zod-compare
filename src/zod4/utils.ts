@@ -144,16 +144,6 @@ export const flatUnwrapUnion = <
   }) as unknown as Options;
 };
 
-export const flatUnwrapIntersection = (schema: $ZodTypes): $ZodTypes[] => {
-  const def = schema._zod.def;
-  if (def.type !== "intersection") return [schema];
-  if (!isZodTypes(def.left) || !isZodTypes(def.right)) return [];
-  return [
-    ...flatUnwrapIntersection(def.left),
-    ...flatUnwrapIntersection(def.right),
-  ];
-};
-
 export const zodToString = (
   schema: $ZodType,
   options?: { format?: boolean },

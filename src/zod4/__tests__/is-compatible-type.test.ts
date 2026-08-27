@@ -204,58 +204,20 @@ describe("isCompatibleType", () => {
     ).toBe(true);
   });
 
-  test("combines object shapes when the provided type is an intersection", () => {
+  test("requires a provided type to satisfy every expected intersection member", () => {
     const left = z.object({ a: z.string() });
     const right = z.object({ b: z.number() });
-    const providedIntersection = z.intersection(left, right);
-    const expectedConstituent = z.object({ a: z.string() });
-    const expectedCombined = z.object({ a: z.string(), b: z.number() });
+    const expectedIntersection = z.intersection(left, right);
     const providedCombined = z.object({
       a: z.string(),
       b: z.number(),
       c: z.boolean(),
     });
-    expectTypeOf<z.infer<typeof providedIntersection>>().toExtend<
-      z.infer<typeof expectedConstituent>
-    >();
-    expectTypeOf<z.infer<typeof providedIntersection>>().toExtend<
-      z.infer<typeof expectedCombined>
-    >();
     expectTypeOf<z.infer<typeof providedCombined>>().toExtend<
-      z.infer<typeof providedIntersection>
+      z.infer<typeof expectedIntersection>
     >();
-    expect(isCompatibleType(expectedConstituent, providedIntersection)).toBe(
-      true,
-    );
-    expect(isCompatibleType(expectedCombined, providedIntersection)).toBe(true);
-    expect(isCompatibleType(providedIntersection, providedCombined)).toBe(true);
-    expect(isCompatibleType(providedIntersection, left)).toBe(false);
-  });
-
-  test("rejects a non-object intersection for a weak object target", () => {
-    const expected = z.object({ a: z.string().optional() });
-    const provided = z.intersection(z.object({}), z.string());
-    const providedWithReadonlyObject = z.intersection(
-      z.readonly(z.object({})),
-      z.string(),
-    );
-    const providedWithObjectUnion = z.intersection(
-      z.union([z.object({}), z.never()]),
-      z.string(),
-    );
-
-    expectTypeOf<z.infer<typeof provided>>().not.toExtend<
-      z.infer<typeof expected>
-    >();
-    expectTypeOf<z.infer<typeof providedWithReadonlyObject>>().not.toExtend<
-      z.infer<typeof expected>
-    >();
-    expectTypeOf<z.infer<typeof providedWithObjectUnion>>().not.toExtend<
-      z.infer<typeof expected>
-    >();
-    expect(isCompatibleType(expected, provided)).toBe(false);
-    expect(isCompatibleType(expected, providedWithReadonlyObject)).toBe(false);
-    expect(isCompatibleType(expected, providedWithObjectUnion)).toBe(false);
+    expect(isCompatibleType(expectedIntersection, providedCombined)).toBe(true);
+    expect(isCompatibleType(expectedIntersection, left)).toBe(false);
   });
 
   test("recognizes when an intersection infers never", () => {
