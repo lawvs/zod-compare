@@ -619,12 +619,22 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     },
   },
   {
+    name: "check expected intersection assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      if (expectedDef.type !== "intersection") return next();
+
+      return (
+        recheck(expectedDef.left, providedType) &&
+        recheck(expectedDef.right, providedType)
+      );
+    },
+  },
+  {
     name: "check readonly assignability",
     compare: (expectedType, providedType, next, recheck) => {
       const expectedDef = expectedType._zod.def;
       const providedDef = providedType._zod.def;
-
-      if (expectedDef.type === "intersection") return next();
 
       if (expectedDef.type === "readonly") {
         const expectedInner = getInnerType(expectedType);
@@ -649,17 +659,10 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     },
   },
   {
-    name: "check intersection assignability",
+    name: "check provided intersection assignability",
     compare: (expectedType, providedType, next, recheck) => {
       const expectedDef = expectedType._zod.def;
       const providedDef = providedType._zod.def;
-
-      if (expectedDef.type === "intersection") {
-        return (
-          recheck(expectedDef.left, providedType) &&
-          recheck(expectedDef.right, providedType)
-        );
-      }
 
       if (providedDef.type === "intersection") {
         if (expectedDef.type === "object") {
