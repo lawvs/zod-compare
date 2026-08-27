@@ -1,148 +1,20 @@
-import type { $ZodType, $ZodTypes, $ZodUnion } from "zod/v4/core";
+import type { $ZodType, $ZodUnion } from "zod/v4/core";
 import { createCompareFn } from "./create-compare-fn.ts";
+import {
+  getFiniteLiteralValues,
+  isInferredAsNever,
+  schemaAcceptsNull,
+  schemaAcceptsUndefined,
+  schemaAllowsMissingObjectKey,
+} from "./inferred-type.ts";
 import { isSameType } from "./is-same-type.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  isNeverLikeType,
+  getInnerType,
   isZodType,
   isZodTypes,
 } from "./utils.ts";
-
-const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
-  const def = schema._zod.def;
-  if (
-    "innerType" in def &&
-    typeof def.innerType === "object" &&
-    isZodType(def.innerType) &&
-    isZodTypes(def.innerType)
-  ) {
-    return def.innerType;
-  }
-  return undefined;
-};
-
-const schemaAcceptsUndefined = (schema: $ZodType): boolean => {
-  if (!isZodType(schema) || !isZodTypes(schema)) return false;
-
-  const def = schema._zod.def;
-  if (
-    def.type === "undefined" ||
-    def.type === "any" ||
-    def.type === "unknown"
-  ) {
-    return true;
-  }
-
-  if (def.type === "literal") {
-    return def.values.includes(undefined);
-  }
-
-  if (def.type === "optional") {
-    return true;
-  }
-
-  if (def.type === "nullable") {
-    const innerType = getInnerType(schema);
-    return innerType ? schemaAcceptsUndefined(innerType) : false;
-  }
-
-  if (def.type === "union") {
-    return flatUnwrapUnion(schema as $ZodUnion).some((option) =>
-      schemaAcceptsUndefined(option),
-    );
-  }
-
-  return false;
-};
-
-const schemaAcceptsNull = (schema: $ZodType): boolean => {
-  if (!isZodType(schema) || !isZodTypes(schema)) return false;
-
-  const def = schema._zod.def;
-  if (def.type === "null" || def.type === "any" || def.type === "unknown") {
-    return true;
-  }
-
-  if (def.type === "literal") {
-    return def.values.includes(null);
-  }
-
-  if (def.type === "optional") {
-    const innerType = getInnerType(schema);
-    return innerType ? schemaAcceptsNull(innerType) : false;
-  }
-
-  if (def.type === "nullable") {
-    return true;
-  }
-
-  if (def.type === "union") {
-    return flatUnwrapUnion(schema as $ZodUnion).some((option) =>
-      schemaAcceptsNull(option),
-    );
-  }
-
-  return false;
-};
-
-/**
- * Checks whether an object property may be omitted for the inferred TypeScript
- * object type.
- *
- * This is narrower than accepting `undefined` as a value. For example,
- * `z.union([z.string(), z.undefined()])` accepts `undefined`, but still infers a
- * required property when used in `z.object({ key: ... })`.
- */
-const schemaAllowsMissingObjectKey = (schema: $ZodType): boolean => {
-  if (!isZodType(schema) || !isZodTypes(schema)) return false;
-
-  const def = schema._zod.def;
-  if (def.type === "optional") {
-    return true;
-  }
-
-  if (def.type === "nullable") {
-    const innerType = getInnerType(schema);
-    return innerType ? schemaAllowsMissingObjectKey(innerType) : false;
-  }
-
-  return false;
-};
-
-const getEnumValues = (
-  entries: Record<string, unknown>,
-): readonly unknown[] => {
-  const values = Object.entries(entries)
-    .filter(([key, value]) => {
-      if (typeof value !== "string") return true;
-      const numericKey = Number(key);
-      return !(
-        Number.isFinite(numericKey) && Object.is(entries[value], numericKey)
-      );
-    })
-    .map(([, value]) => value);
-  return Array.from(new Set(values));
-};
-
-/**
- * Extracts the finite value set represented by literal and enum schemas.
- *
- * These values can be compared with subset logic before falling back to broader
- * kind rules.
- */
-const getFiniteLiteralValues = (
-  schema: $ZodTypes,
-): readonly unknown[] | undefined => {
-  const def = schema._zod.def;
-  if (def.type === "literal") {
-    return def.values;
-  }
-  if (def.type === "enum") {
-    return getEnumValues(def.entries);
-  }
-  return undefined;
-};
 
 const recordKeysAreCompatible = (
   expectedKeyType: $ZodType,
@@ -220,12 +92,12 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
     compare: (expectedType, providedType, next) => {
       const expectedKind = expectedType._zod.def.type;
       const providedKind = providedType._zod.def.type;
-      const expectedNeverLike = isNeverLikeType(expectedType);
-      const providedNeverLike = isNeverLikeType(providedType);
+      const expectedInfersNever = isInferredAsNever(expectedType);
+      const providedInfersNever = isInferredAsNever(providedType);
 
-      if (providedNeverLike) return true;
+      if (providedInfersNever) return true;
       if (expectedKind === "any" || expectedKind === "unknown") return true;
-      if (expectedNeverLike) return false;
+      if (expectedInfersNever) return false;
       if (providedKind === "unknown") return false;
       if (providedKind === "any") return true;
 
@@ -313,6 +185,67 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
         );
       }
       return next();
+    },
+  },
+  {
+    name: "check promise covariance",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      const providedDef = providedType._zod.def;
+      if (expectedDef.type === "promise" && providedDef.type === "promise") {
+        return recheck(expectedDef.innerType, providedDef.innerType);
+      }
+      return next();
+    },
+  },
+  {
+    name: "check expected intersection assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      if (expectedDef.type !== "intersection") return next();
+
+      return (
+        recheck(expectedDef.left, providedType) &&
+        recheck(expectedDef.right, providedType)
+      );
+    },
+  },
+  {
+    name: "check readonly assignability",
+    compare: (expectedType, providedType, next, recheck) => {
+      const expectedDef = expectedType._zod.def;
+      const providedDef = providedType._zod.def;
+
+      if (expectedDef.type === "readonly") {
+        const expectedInner = getInnerType(expectedType);
+        if (!expectedInner) return false;
+
+        if (providedDef.type !== "readonly") {
+          return recheck(expectedInner, providedType);
+        }
+
+        const providedInner = getInnerType(providedType);
+        return providedInner ? recheck(expectedType, providedInner) : false;
+      }
+
+      if (providedDef.type !== "readonly") {
+        return next();
+      }
+
+      const providedInner = getInnerType(providedType);
+      if (!providedInner) return false;
+
+      if (
+        expectedDef.type === "array" ||
+        expectedDef.type === "tuple" ||
+        expectedDef.type === "map" ||
+        expectedDef.type === "set"
+      ) {
+        // For example, `readonly string[]` is not assignable to `string[]` because it lacks `push`.
+        return false;
+      }
+
+      return recheck(expectedType, providedInner);
     },
   },
   {
@@ -548,8 +481,6 @@ export const isCompatibleTypePresetRules: CompareRule[] = [
  *
  * Returns true when `providedType <= expectedType`, i.e. every value accepted by
  * `providedType` can be used where `expectedType` is expected.
- *
- * @experimental This API is unstable and still in development.
  *
  * @param expectedType The wider/supertype schema.
  * @param providedType The narrower/subtype schema.

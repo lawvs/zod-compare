@@ -1,4 +1,4 @@
-import { describe, expect, test } from "vitest";
+import { describe, expect, expectTypeOf, test } from "vitest";
 import { z } from "zod/v4";
 import { isCompatibleType } from "../is-compatible-type.ts";
 
@@ -60,6 +60,21 @@ describe("isCompatibleType", () => {
     expect(
       isCompatibleType(z.string().optional(), z.promise(z.undefined())),
     ).toBe(false);
+  });
+
+  test("compares promise result types covariantly", () => {
+    const expected = z.promise(z.string());
+    const provided = z.promise(z.literal("value"));
+
+    expectTypeOf<z.infer<typeof provided>>().toExtend<
+      z.infer<typeof expected>
+    >();
+    expectTypeOf<z.infer<typeof expected>>().not.toExtend<
+      z.infer<typeof provided>
+    >();
+
+    expect(isCompatibleType(expected, provided)).toBe(true);
+    expect(isCompatibleType(provided, expected)).toBe(false);
   });
 
   test("compares TypeScript top, bottom, and any-like schemas", () => {
@@ -189,6 +204,22 @@ describe("isCompatibleType", () => {
     ).toBe(true);
   });
 
+  test("requires a provided type to satisfy every expected intersection member", () => {
+    const left = z.object({ a: z.string() });
+    const right = z.object({ b: z.number() });
+    const expectedIntersection = z.intersection(left, right);
+    const providedCombined = z.object({
+      a: z.string(),
+      b: z.number(),
+      c: z.boolean(),
+    });
+    expectTypeOf<z.infer<typeof providedCombined>>().toExtend<
+      z.infer<typeof expectedIntersection>
+    >();
+    expect(isCompatibleType(expectedIntersection, providedCombined)).toBe(true);
+    expect(isCompatibleType(expectedIntersection, left)).toBe(false);
+  });
+
   test("compares tuple assignability", () => {
     expect(
       isCompatibleType(
@@ -232,6 +263,100 @@ describe("isCompatibleType", () => {
     expect(
       isCompatibleType(z.tuple([]).rest(z.number()), z.array(z.number())),
     ).toBe(true);
+  });
+
+  test("compares readonly assignability with TypeScript mutability rules", () => {
+    const mutableArray = z.array(z.string());
+    const readonlyArray = z.readonly(z.array(z.string()));
+    const mutableTuple = z.tuple([z.string()]);
+    const readonlyTuple = z.readonly(z.tuple([z.string()]));
+    const mutableMap = z.map(z.string(), z.number());
+    const readonlyMap = z.readonly(z.map(z.string(), z.number()));
+    const mutableSet = z.set(z.string());
+    const readonlySet = z.readonly(z.set(z.string()));
+    const mutableObject = z.object({ value: z.string() });
+    const readonlyObject = z.readonly(z.object({ value: z.string() }));
+    const readonlyNever = z.readonly(z.never());
+
+    expectTypeOf<z.infer<typeof mutableArray>>().toExtend<
+      z.infer<typeof readonlyArray>
+    >();
+    expectTypeOf<z.infer<typeof readonlyArray>>().not.toExtend<
+      z.infer<typeof mutableArray>
+    >();
+    expectTypeOf<z.infer<typeof mutableTuple>>().toExtend<
+      z.infer<typeof readonlyTuple>
+    >();
+    expectTypeOf<z.infer<typeof readonlyTuple>>().not.toExtend<
+      z.infer<typeof mutableTuple>
+    >();
+    expectTypeOf<z.infer<typeof mutableMap>>().toExtend<
+      z.infer<typeof readonlyMap>
+    >();
+    expectTypeOf<z.infer<typeof readonlyMap>>().not.toExtend<
+      z.infer<typeof mutableMap>
+    >();
+    expectTypeOf<z.infer<typeof mutableSet>>().toExtend<
+      z.infer<typeof readonlySet>
+    >();
+    expectTypeOf<z.infer<typeof readonlySet>>().not.toExtend<
+      z.infer<typeof mutableSet>
+    >();
+    expectTypeOf<z.infer<typeof readonlyObject>>().toExtend<
+      z.infer<typeof mutableObject>
+    >();
+    expectTypeOf<z.infer<typeof readonlyNever>>().toEqualTypeOf<never>();
+    expect(isCompatibleType(readonlyArray, mutableArray)).toBe(true);
+    expect(isCompatibleType(mutableArray, readonlyArray)).toBe(false);
+    expect(isCompatibleType(readonlyTuple, mutableTuple)).toBe(true);
+    expect(isCompatibleType(mutableTuple, readonlyTuple)).toBe(false);
+    expect(isCompatibleType(readonlyMap, mutableMap)).toBe(true);
+    expect(isCompatibleType(mutableMap, readonlyMap)).toBe(false);
+    expect(isCompatibleType(readonlySet, mutableSet)).toBe(true);
+    expect(isCompatibleType(mutableSet, readonlySet)).toBe(false);
+    expect(isCompatibleType(mutableObject, readonlyObject)).toBe(true);
+    expect(isCompatibleType(z.unknown(), readonlyArray)).toBe(true);
+    expect(isCompatibleType(z.never(), readonlyNever)).toBe(true);
+  });
+
+  test("treats nested readonly as idempotent", () => {
+    const readonlyArray = z.array(z.string()).readonly();
+    const nestedReadonlyArray = readonlyArray.readonly();
+
+    expectTypeOf<z.infer<typeof readonlyArray>>().toEqualTypeOf<
+      z.infer<typeof nestedReadonlyArray>
+    >();
+    expect(isCompatibleType(readonlyArray, nestedReadonlyArray)).toBe(true);
+    expect(isCompatibleType(nestedReadonlyArray, readonlyArray)).toBe(true);
+  });
+
+  test("preserves readonly through a provided union", () => {
+    const mutableArray = z.array(z.unknown());
+    const readonlyUnionOfArrays = z.readonly(
+      z.union([z.array(z.string()), z.array(z.number())]),
+    );
+
+    expectTypeOf<z.infer<typeof readonlyUnionOfArrays>>().not.toExtend<
+      z.infer<typeof mutableArray>
+    >();
+
+    expect(isCompatibleType(mutableArray, readonlyUnionOfArrays)).toBe(false);
+  });
+
+  test("preserves readonly while decomposing an expected intersection", () => {
+    const readonlyArray = z.readonly(z.array(z.string()));
+    const expectedReadonlyIntersection = z.intersection(
+      z.readonly(z.array(z.string())),
+      z.unknown(),
+    );
+
+    expectTypeOf<z.infer<typeof readonlyArray>>().toExtend<
+      z.infer<typeof expectedReadonlyIntersection>
+    >();
+
+    expect(isCompatibleType(expectedReadonlyIntersection, readonlyArray)).toBe(
+      true,
+    );
   });
 
   test("compares union assignability", () => {

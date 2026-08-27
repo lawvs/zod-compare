@@ -1,10 +1,10 @@
 import type { $ZodTypes, $ZodUnion } from "zod/v4/core";
 import { isLegacyZodFunction } from "./compat.ts";
 import { createCompareFn } from "./create-compare-fn.ts";
+import { isInferredAsNever } from "./inferred-type.ts";
 import type { CompareRule } from "./types.ts";
 import {
   flatUnwrapUnion,
-  isNeverLikeType,
   isSimpleType,
   isZodType,
   isZodTypes,
@@ -104,10 +104,10 @@ export const isSameTypePresetRules = [
   {
     name: "compare never-like type",
     compare: (a, b, next) => {
-      const aNeverLike = isNeverLikeType(a);
-      const bNeverLike = isNeverLikeType(b);
-      if (aNeverLike || bNeverLike) {
-        return aNeverLike && bNeverLike;
+      const aInfersNever = isInferredAsNever(a);
+      const bInfersNever = isInferredAsNever(b);
+      if (aInfersNever || bInfersNever) {
+        return aInfersNever && bInfersNever;
       }
       return next();
     },

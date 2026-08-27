@@ -131,7 +131,7 @@ const isSameType = createCompareFn(isSameTypePresetRules);
 const isCompatibleType = createCompareFn(isCompatibleTypePresetRules);
 ```
 
-### `isCompatibleType` (Experimental API)
+### `isCompatibleType`
 
 Compares two Zod schemas and returns `true` if they are compatible.
 

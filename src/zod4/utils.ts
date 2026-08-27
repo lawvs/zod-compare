@@ -115,16 +115,17 @@ export const isSimpleType = (
   );
 };
 
-export const isNeverLikeType = (schema: $ZodTypes): boolean => {
+export const getInnerType = (schema: $ZodTypes): $ZodTypes | undefined => {
   const def = schema._zod.def;
-  if (def.type === "never") return true;
-  if (def.type !== "union") return false;
-
-  const options = flatUnwrapUnion(schema as $ZodUnion);
-  return (
-    options.length === 0 ||
-    options.every((option) => isZodTypes(option) && isNeverLikeType(option))
-  );
+  if (
+    "innerType" in def &&
+    typeof def.innerType === "object" &&
+    isZodType(def.innerType) &&
+    isZodTypes(def.innerType)
+  ) {
+    return def.innerType;
+  }
+  return undefined;
 };
 
 export const flatUnwrapUnion = <
