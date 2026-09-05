@@ -1,5 +1,11 @@
 # zod-compare
 
+## 3.2.1
+
+### Patch Changes
+
+- [#121](https://github.com/lawvs/zod-compare/pull/121) [`0e0ef6c`](https://github.com/lawvs/zod-compare/commit/0e0ef6cf0d9ddde8174a05b305450570ae51be8a) Thanks [@lawvs](https://github.com/lawvs)! - Stabilize `isCompatibleType`, fix assignability for promise and readonly schemas, decompose expected intersections, and recognize readonly and nonoptional schemas whose inferred output remains `never`.
+
 ## 3.2.0
 
 ### Minor Changes
